@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Search API 业界调查 · 2026-09</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb;
+    --blue:#2563eb; --violet:#7c3aed; --red:#dc2626; --orange:#ea580c; --green:#059669; --slate:#64748b;
+    --ok:#059669; --warn:#d97706; --bad:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Segoe UI,Roboto,sans-serif;}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{background:linear-gradient(135deg,#0f172a,#1e293b 55%,#334155);color:#fff;padding:38px 28px 30px}
+  header h1{margin:0 0 6px;font-size:28px;letter-spacing:.3px}
+  header p{margin:4px 0;color:#cbd5e1;font-size:14px}
+  .badges{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+  .badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#e2e8f0;
+    border-radius:999px;padding:4px 11px;font-size:12px}
+  nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:9px 22px;display:flex;gap:6px;flex-wrap:wrap;font-size:13px}
+  nav a{padding:4px 10px;border-radius:7px;color:#374151}
+  nav a:hover{background:#eef2ff;color:var(--blue);text-decoration:none}
+  main{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
+  section{margin:0 0 34px}
+  h2{font-size:20px;margin:30px 0 6px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:15px;margin:22px 0 8px;color:#1f2937}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;
+    box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .grid{display:grid;gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr}}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+  .kpi .v{font-size:24px;font-weight:700;letter-spacing:-.5px}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:3px}
+  .kpi .n{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+  table{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#f3f4f6;font-weight:600;position:relative;white-space:nowrap}
+  th.sortable{cursor:pointer;user-select:none}
+  th.sortable:hover{background:#e5e7eb}
+  tbody tr:nth-child(even){background:#fafafa}
+  tbody tr:hover{background:#eef6ff}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+  .t-own{background:#dbeafe;color:#1d4ed8}
+  .t-ai{background:#ede9fe;color:#6d28d9}
+  .t-serp{background:#fee2e2;color:#b91c1c}
+  .t-model{background:#ffedd5;color:#c2410c}
+  .t-cloud{background:#d1fae5;color:#047857}
+  .t-self{background:#e2e8f0;color:#334155}
+  .v-official{color:var(--ok);font-weight:600}
+  .v-announce{color:var(--warn);font-weight:600}
+  .v-secondary{color:var(--bad);font-weight:600}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 12px}
+  .toolbar input[type=search]{padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:190px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-size:12px;cursor:pointer}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chart{width:100%;overflow-x:auto}
+  svg{display:block;max-width:100%;height:auto}
+  .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+  .callout{border-left:4px solid var(--blue);background:#eff6ff;padding:12px 15px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+  .callout.warn{border-color:var(--warn);background:#fffbeb}
+  .callout.bad{border-color:var(--bad);background:#fef2f2}
+  .callout.ok{border-color:var(--ok);background:#ecfdf5}
+  ul{margin:8px 0 8px 20px;padding:0}
+  li{margin:4px 0}
+  code{background:#f3f4f6;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#374151;margin:6px 0 2px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+  footer{border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--muted);font-size:12px}
+  .mono{font-variant-numeric:tabular-nums}
+  .small{font-size:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Web Search API 业界调查</h1>
+  <p>面向 Agent 嵌入的联网搜索：厂商、计费机制与真实报价（逐家官网核实）</p>
+  <p>数据抓取：2026-09-17 · 来源：厂商官网定价页 / 官方文档 / 官方公告 · 汇率假设：1 USD = 7.2 CNY</p>
+  <div class="badges">
+    <span class="badge">23 家产品</span>
+    <span class="badge">6 大类</span>
+    <span class="badge">5 种计费机制</span>
+    <span class="badge">官网核实 21 / 公告 2 / 二手 1</span>
+    <span class="badge">覆盖率：6 组规模口径 + 6 项第三方测量</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#summary">结论</a>
+  <a href="#map">方案地图</a>
+  <a href="#price">价格总览</a>
+  <a href="#cost">月成本曲线</a>
+  <a href="#cn">国内云厂商</a>
+  <a href="#free">免费额度</a>
+  <a href="#coverage">覆盖率</a>
+  <a href="#billing">计费机制</a>
+  <a href="#quadrant">来源 vs 价格</a>
+  <a href="#table">完整数据表</a>
+  <a href="#analysis">数据分析</a>
+  <a href="#tco">自建 TCO 对比</a>
+  <a href="#traps">计费陷阱</a>
+  <a href="#matrix">决策矩阵</a>
+  <a href="#method">方法论与来源</a>
+  <a href="#legal">法律风险（附录 A）</a>
+</nav>
+
+<main>
+
+<!-- ======================= 结论 ======================= -->
+<section id="summary">
+  <h2>一、核心结论</h2>
+  <div class="grid g4" id="kpis"></div>
+
+  <div class="callout ok">
+    <b>结论 1：价格不是障碍。</b>主流独立索引 API 集中在 <b>$1–15 / 1,000 次查询（≈¥0.007–0.11 / 次）</b>，
+    中位数约 <b>$5–7 / 1k（≈¥0.036–0.05 / 次）</b>。一个日均 200 次搜索的 Agent，月成本 <b>$30–42（¥216–302）</b>；
+    最低档（Parallel Turbo $1/1k）<b>月成本不到 ¥45</b>。
+  </div>
+  <div class="callout warn">
+    <b>结论 2：真正的差异在"计费机制"而不是"单价"。</b>同样标价 $5/1k，可能是"每次调用固定扣"，
+    也可能是"模型自己决定搜几次，每次另计"（模型内置工具）、"扣 credit 且会过期"（Serper）、
+    或"调用费 + 检索内容 token 双计费"（OpenAI / Anthropic）。<b>选型时必须看机制，不是看单价。</b>
+  </div>
+  <div class="callout bad">
+    <b>结论 3：2025–2027 三条供给线在消失。</b>
+    Bing Search API 已 <b>2025-08-11 退役</b>（只剩 Azure Grounding，且官方明确"输出不得用于其他应用"）；
+    Google Custom Search JSON API <b>已对新客户关闭、据多方报 2027-01 关停</b>；
+    "转卖 Google SERP"的代抓厂商（Serper / SerpApi）是当前唯一能拿到"和 Google 一致结果"的路径，但属法律灰色地带。
+    长期稳定的只剩<b>独立索引</b>（Brave / Kagi / Exa / Parallel）与<b>云厂商第一方</b>。
+  </div>
+  <div class="callout">
+    <b>结论 4：对 inputlab 这种"自建 CDP 抓 Google"的架构</b>，临界点大约在
+    <b>每月 2,000–3,000 次查询</b>：低于它，自建（现金零成本）划算；高于它，
+    一次封禁/一次改版的人力成本就超过全年 API 费用。<b>建议：API 为主、CDP 为兜底</b>，
+    而不是二选一。
+  </div>
+</section>
+
+<!-- ======================= 方案地图 ======================= -->
+<section id="map">
+  <h2>二、方案地图：六类供给</h2>
+  <p class="sub">按"数据从哪里来"分类——这决定了它的稳定性、合规性与长期可用性。</p>
+  <div class="grid g3" id="mapCards"></div>
+</section>
+
+<!-- ======================= 价格总览 ======================= -->
+<section id="price">
+  <h2>三、价格总览（每 1,000 次查询，官网原文价）</h2>
+  <div class="toolbar">
+    <button class="chip on" data-scale="log" id="btnLog">对数刻度</button>
+    <button class="chip" data-scale="linear" id="btnLinear">线性刻度</button>
+    <span style="flex:1"></span>
+    <button class="chip on" id="btnUSD">USD</button>
+    <button class="chip" id="btnCNY">CNY</button>
+  </div>
+  <div class="legend" id="legend1"></div>
+  <div class="card chart" id="chartPrice"></div>
+  <p class="note">
+    口径说明：仅包含"每次查询 / 每千次请求"可归一的条目；按页（Contents/Extract）、按 token（Jina）、
+    按订阅（SerpApi 低价档已折算）分别在其他图表中单列。条形为官网公开价，<b>不含 token 费</b>——
+    模型内置工具的 token 费用另计（见"计费陷阱"）。条形越短越便宜。
+  </p>
+</section>
+
+<!-- ======================= 月成本曲线 ======================= -->
+<section id="cost">
+  <h2>四、月成本曲线（代表性厂商，对数双轴）</h2>
+  <div class="card chart" id="chartCost"></div>
+  <p class="note">按"每月查询次数 × 官网单价"线性外推。SerpApi 按其公开档位的最优单价（$9.17/1k）外推，
+  实际超过 30k/月需走 Enterprise 报价。SearXNG 为固定基础设施成本（按 $6/月 VPS 计），与查询量无关。</p>
+  <h3>月成本速查（USD / CNY）</h3>
+  <div class="card" id="costTable" style="padding:0;overflow:hidden"></div>
+</section>
+
+<!-- ======================= 国内云厂商 ======================= -->
+<section id="cn">
+  <h2>五、国内云厂商（官网文档核实，元/千次）</h2>
+  <div class="card chart" id="chartCN"></div>
+  <div class="card" id="cnTable" style="padding:0;overflow:hidden"></div>
+  <p class="note">
+    阿里云为<b>阶梯到达制</b>：按日调用量整体落入某一阶梯，且与 QPS 性能规格绑定（默认 30 QPS，升档需提前一周申请，
+    连续 5 天不达标会降档）。腾讯云为版本制 + 资源包，失败调用不计费。火山引擎按加和量日结，欠费 24h 停服、168h 释放资源。
+    百度千帆每日 100 次免费、与"百度搜索"共享额度、单账号日上限 10 万次，但单价未在公开文档给出。
+  </p>
+</section>
+
+<!-- ======================= 免费额度 ======================= -->
+<section id="free">
+  <h2>六、免费额度对比（每月等效免费查询次数）</h2>
+  <div class="card chart" id="chartFree"></div>
+  <p class="note">
+    "等效查询次数"换算口径：Brave = $5/月 credit ÷ $5/1k；Exa = $10/月 ÷ $7/1k；Parallel = $5/月 ÷ $1/1k；
+    Tavily = 1,000 credits（basic 搜索 1 credit/次）；Firecrawl = 1,000 credits ÷ 2 credits/次搜索；
+    Jina = 10M tokens ÷ 约 3,300 tokens/页；百度 = 100 次/天 × 30。一次性额度（Serper 2,500、You.com $100）
+    折算为首月等效值，标注为"一次性"。
+  </p>
+</section>
+
+<!-- ======================= 覆盖率 ======================= -->
+<section id="coverage">
+  <h2>七、覆盖率与索引规模</h2>
+  <p class="sub">假设 Google 为基线。覆盖率不像价格那样公开，但有三类可查迹象：① 厂商自报索引规模；② 索引来源（自有 / 授权 / 聚合 / 代抓）；③ 第三方测量的重叠度与质量分。</p>
+
+  <div class="callout bad">
+    <b>先纠正一个直觉：覆盖率不是「索引了多少页」，而是「索引了哪些页」。</b>
+    学术测量显示 Google 与 Bing 的 top-1 结果重叠只有 <b>31%</b>，整体重叠<b>始终低于 32%</b>（Yagci et al. 2022）；
+    AI 助手引用的链接里只有 <b>12%</b> 出现在 Google 同一问题的 top 10，<b>80% 在 Google 上完全没有排名</b>（Ahrefs 2025，15,000 条 prompt）。
+    也就是说：<b>即使被公认为「最强」的 Google，也覆盖不到另一个引擎能覆盖的页面</b>——覆盖率问题的正解是多来源组合，不是「选一个最大的」。
+  </div>
+
+  <h3>7.1 索引规模（厂商自报口径）</h3>
+  <div class="card chart" id="chartIndexSize"></div>
+  <div class="card" id="tblIndexSize" style="padding:0;overflow:hidden"></div>
+  <p class="note">Google 官方只写「hundreds of billions of webpages / well over 100,000,000 gigabytes」，从不给精确页数——图中 300B 为区间示意。
+  Bing 从未公布规模，8–14B 为第三方估算。注意：规模条的长度差异（Google ∼300B vs Mojeek 9B）<b>不能</b>解释它们与 Google 的重叠度差异。</p>
+
+  <h3>7.2 索引来源分类（决定供给稳定性）</h3>
+  <p class="sub">自有索引不怕别人断供；代抓 Google 的同时承担法律与供给风险（Google 已于 2025 年对 SerpApi 提起诉讼）。</p>
+  <div class="card" id="tblCover" style="padding:0;overflow:hidden"></div>
+
+  <h3>7.3 第三方测量：重叠度与质量分</h3>
+  <div class="card" id="tblOverlap" style="padding:0;overflow:hidden"></div>
+  <div class="grid g2">
+    <div class="card chart" id="chartAICite"></div>
+    <div class="card chart" id="chartAA"></div>
+  </div>
+  <p class="note">左图：AI 助手引用中出现在 Google 同一 prompt Top 10 的比例（Ahrefs，15,000 prompts，2025-08）。
+  右图：Artificial Analysis Search Index（2026 起）——同一模型 + 同一 agent 框架，仅替换搜索供应商，
+  DeepSearchQA / BrowseComp / AA-Omniscience 三项基准等权平均；未单独列出分数的供应商在该榜落在 65–75 区间。</p>
+
+  <h3>7.4 对选型的三个含义</h3>
+  <div class="callout ok">
+    <b>① 覆盖率只能靠组合，不能靠单选。</b>要「尽量不漏」就应该用两家不同来源的索引（例如 Brave 自有索引 + 一家 Google 系），
+    它们之间重叠很低，组合后的召回显著高于任何单一引擎。<br>
+    <b>② 「索引规模」是最弱的指标。</b>Brave 40B 与 Mojeek 9B 差 4 倍，但两者与 Google 的重叠都远低于 50%——
+    规模差异 ≠ 覆盖差异，<b>要测的是「对你的查询集的命中率」</b>。<br>
+    <b>③ 中文/非英语是另一条轴。</b>Google、Brave、Mojeek 对中文长尾的覆盖都弱于百度系；
+    国内云厂商的价值主要在中文内容与合规，而不是索引规模。
+  </div>
+
+  <h3>7.5 如何自测覆盖率（可复现探针方法）</h3>
+  <p class="sub">厂商不公布覆盖率，但用一小组「锚点」在几小时内就能测出对自己场景的覆盖率与互补性。</p>
+  <div class="card" id="tblSelfTest" style="padding:0;overflow:hidden"></div>
+  <div class="callout">
+    <b>最小可行实验：</b>准备 30–50 个「已知答案页面」（收藏夹、站点 sitemap、近一周新发布页面、冷门专有名词），
+    为每页写一条<b>不含域名</b>的查询，逐家 API 跑同一批查询，统计 <code>recall@10</code>（目标页是否进前 10）与
+    <code>MRR</code>（目标页的平均倒数排名）。再以 Google 为基线，算「其他引擎召回了多少 Google 没召回的目标页」——
+    <b>互补率</b>比覆盖率更能指导选型。
+  </div>
+
+  <div class="callout warn">
+    <b>诚实说明：</b>没有任何搜索厂商公布真实覆盖率；索引规模是营销口径，「更多页面」不等于「更好召回」。
+    本节规模数字全部来自厂商官网/官方博客原文或第三方公开估算；重叠度数字来自学术论文与第三方研究，
+    均为<b>特定查询集上的测量</b>，不可外推为普适覆盖率。Google 作为「最强」是本节的<b>假设基线</b>，不是测量结论。
+  </div>
+</section>
+
+<!-- ======================= 计费机制 ======================= -->
+<section id="billing">
+  <h2>八、计费机制构成</h2>
+  <div class="grid g2">
+    <div class="card chart" id="chartBilling"></div>
+    <div class="card" id="billingExplain"></div>
+  </div>
+  <div class="card" id="billingTable" style="padding:0;overflow:hidden"></div>
+</section>
+
+<!-- ======================= 象限图 ======================= -->
+<section id="quadrant">
+  <h2>九、数据来源独立性 vs 价格</h2>
+  <div class="card chart" id="chartQuad"></div>
+  <p class="note">
+    纵轴为<b>数据来源性质</b>（按厂商公开说明归类，非第三方审计）：<b>第一方云/模型</b>（云厂商或模型厂商自己产出结果）、
+    <b>自有索引</b>（厂商自述拥有独立索引或自有抓取管线）、<b>代抓 Google</b>（结果来自对 Google SERP 的抓取）。
+    横轴为每千次查询价格（对数）。左上角 = 便宜且来源独立；右下角 = 贵且依赖第三方抓取。
+  </p>
+  <div class="callout">读图：<b>Parallel（$1/1k）</b>与 <b>Brave（$5/1k）</b>落在"便宜 + 独立"象限；
+  <b>Serper（$0.3–1/1k）</b>最便宜但位于"代抓 Google"轨道；<b>Azure / Gemini（$14/1k）</b>最贵，
+  且前者输出不可外用、后者结果被模型加工过——它们卖的不是"链接"，是"已加工的答案"。</div>
+</section>
+
+<!-- ======================= 完整数据表 ======================= -->
+<section id="table">
+  <h2>十、完整数据表</h2>
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="搜索厂商 / 产品 / 备注…">
+    <span id="catChips"></span>
+    <span style="flex:1"></span>
+    <button class="chip on" id="tUSD">USD</button>
+    <button class="chip" id="tCNY">CNY</button>
+    <span class="small" id="count"></span>
+  </div>
+  <div class="card" style="padding:0;overflow:auto;max-height:640px">
+    <table id="tbl">
+      <thead><tr id="thead"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="legend" style="margin-top:10px">
+    <span><span class="v-official">官网核实</span> = 本次逐页打开官网定价页原文</span>
+    <span><span class="v-announce">官方公告</span> = 官网/官方博客公告，定价页表格未渲染出该行</span>
+    <span><span class="v-secondary">二手来源</span> = 未能在官网页面核实</span>
+  </div>
+</section>
+
+<!-- ======================= 数据分析 ======================= -->
+<section id="analysis">
+  <h2>十一、数据分析</h2>
+  <div class="grid g2">
+    <div class="card"><h3 style="margin-top:0">价格带分布</h3><div id="statBand"></div></div>
+    <div class="card"><h3 style="margin-top:0">单位经济学换算</h3><div id="statUnit"></div></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">四个观察</h3>
+    <ol>
+      <li><b>价格收敛在 $5/1k。</b>$5/1k（≈¥0.036/次）几乎成了行业锚点：Brave、Perplexity Search、You.com、
+        Tavily 订阅档、Exa 的 Answer、Parallel 的 Basic 全部落在这一档。差异化不在价格，而在
+        <b>索引质量、延迟、吞吐上限、是否 ZDR</b>。</li>
+      <li><b>抽取（读正文）比搜索便宜一个数量级。</b>Contents / Extract 类接口普遍
+        <b>$1/1k 页</b>（Exa、You.com）、$4/1k（Kagi）、$0.83–3.2/1k（Firecrawl 按档位）。
+        这意味着"搜索贵、读取便宜"——<b>把预算花在"搜得准"，而不是"抓得多"</b>。</li>
+      <li><b>云厂商在国内并不便宜。</b>火山 ¥20/千次、腾讯轻量 ¥18/千次、阿里极速版 ¥12/千次，
+        折算 $1.67–2.78/1k——比 Brave 便宜，但比 Serper（$0.3–1/1k）贵 3–9 倍，且要走 QPS 报备/阶梯/日结。
+        国内价的价值在<b>合规、可用性、中文内容覆盖</b>，不在单价。</li>
+      <li><b>模型内置工具是最贵的一档，且成本不可预测。</b>OpenAI $10–25/1k + 检索内容 token；
+        Anthropic $10/1k + token；Gemini $14/1k search query。Gemini 官方页明确
+        "客户向 Gemini 提交的请求可能触发一次或多次 Google 搜索查询，<b>每执行一次搜索查询都会单独计费</b>"——
+        也就是说<b>一次用户提问可能扣 N 次搜索费</b>。</li>
+    </ol>
+  </div>
+  <div class="callout warn">
+    <b>注意 Gemini 页面的一个例外条款（对成本有利）：</b>官方定价页写明
+    "通过'依托 Google 搜索进行接地'功能检索到的上下文（文本或图片）<b>不计入输入 token 费用</b>"——
+    这与 OpenAI / Anthropic"调用费 + 内容 token 双计费"形成鲜明对比。
+  </div>
+</section>
+
+<!-- ======================= TCO ======================= -->
+<section id="tco">
+  <h2>十二、自建 CDP 抓取 vs 采购 API：TCO 对比</h2>
+  <div class="card" id="tcoTable" style="padding:0;overflow:hidden"></div>
+  <p class="note">
+    自建侧假设：本机/服务器成本按 ¥0（已有 Mac）～¥50/月（VPS）计；维护工时按每月 4 小时 × ¥200/小时
+    （故障排查、验证码对抗、页面改版适配）计；封禁风险按"每季度一次需半天恢复"摊薄。
+    API 侧按 Brave $5/1k 计算，不含 token 费。结论：<b>约 2,000–3,000 次/月是分界线</b>。
+  </p>
+</section>
+
+<!-- ======================= 陷阱 ======================= -->
+<section id="traps">
+  <h2>十三、计费陷阱清单（来自官网原文）</h2>
+  <div class="card" id="trapList"></div>
+</section>
+
+<!-- ======================= 决策矩阵 ======================= -->
+<section id="matrix">
+  <h2>十四、选型决策矩阵</h2>
+  <div class="card" id="matrixTable" style="padding:0;overflow:hidden"></div>
+  <div class="callout ok">
+    <b>对 inputlab 的落地建议：</b>把现有 <code>/search · /open · /wait</code> 语义保持不变，
+    在下面加一层可插拔 <code>SearchProvider</code>：
+    <b>主路</b>用 Brave（日常搜索，$5/1k、50 QPS、ZDR）或 Parallel Turbo（$1/1k、~200ms）；
+    <b>正文层</b>用 Exa / You.com Contents（$1/1k 页）替代/补充 Readability；
+    <b>国内场景</b>切火山豆包搜索（¥20/千次，文档透明、日结）；
+    <b>兜底</b>保留现有 <code>google-cdp</code>（零现金成本、需真浏览器行为的场景）。
+    同时加一个按厂商真实计费单位记账的成本计数器（credit 制按 credit、token 制按 token、阶梯制按日聚合）。
+  </div>
+</section>
+
+<!-- ======================= 方法论 ======================= -->
+<section id="method">
+  <h2>十五、方法论与来源</h2>
+  <div class="card">
+    <h3 style="margin-top:0">取数方法</h3>
+    <ul>
+      <li>先用搜索引擎定位厂商<b>官方定价页</b>，再用真实浏览器（本机 CDP 渲染）<b>打开该页面原文</b>读取数字；
+        对 JS 渲染的页面以官方文档 / 官方公告交叉验证。</li>
+      <li>不采用聚合站、对比博客的数字作为主数据；二手数字仅在无法访问官网时保留，并在表中标红。</li>
+      <li>抓取时间：2026-09-17。所有价格以各厂商官网为准，可能随时变动。</li>
+      <li>汇率：1 USD = 7.2 CNY（假设值，仅用于并排展示，非结算价）。</li>
+    </ul>
+    <h3>官方来源清单</h3>
+    <div id="srcList"></div>
+  </div>
+  <p class="note">本页为一次性调查快照，非持续监测数据。建议每季度重跑一次取数流程刷新。</p>
+</section>
+
+<!-- ======================= 附录 A：法律风险 ======================= -->
+<section id="legal">
+  <h2>附录 A：法律风险（美国）</h2>
+  <p class="sub">问题：以「人类方式驱动真实浏览器」（不黑入、不破坏防御、不自动过验证码、不绕登录墙）是否招致更多美国法律诉讼？
+  方法：检索并逐篇核实美国判例与成文法；抓取时间 2026-09-17。</p>
+
+  <div class="callout ok">
+    <b>结论：没有找到任何以「模拟人类操作」本身作为违法事由或判决依据的案件或法规。</b>
+    检索到的所有相关诉讼，诉因都是：<b>绕过技术措施、违约、转售数据、假账号</b>——不是输入方式。
+    反而在 2026-08 出现了一条对你有利的上诉判例（<b>Amazon v. Perplexity</b>）：
+    代理厂商「替用户操作浏览器」时，CFAA 下的<b>访问者是用户</b>，厂商不承担 CFAA 责任。
+  </div>
+
+  <div class="callout warn">
+    <b>三条风险线（只需要盯这三条）：</b><br>
+    ① <b>合同</b>：违反 ToS → 禁令 + 赔偿（hiQ 赢了 CFAA 却赔了 $500,000）；<br>
+    ② <b>撤销授权后继续</b>：收到 C&D / 被 IP 封锁后仍继续（尤其换 IP、代理、账号）→ CFAA 成立；<br>
+    ③ <b>规避技术保护措施</b>：绕 CAPTCHA / 限流 / 登录墙 / 付费墙 → CFAA + DMCA §1201（+ 票务场景的 BOTS Act）。
+  </div>
+
+  <h3>A.1 判例矩阵（美国）</h3>
+  <div class="card" id="tblCases" style="padding:0;overflow:hidden"></div>
+
+  <h3>A.2 风险阶梯：什么动作把风险推上去</h3>
+  <div class="card chart" id="chartRisk"></div>
+  <div class="card" id="tblRisk" style="padding:0;overflow:hidden"></div>
+
+  <h3>A.3 两个专逗「机器人」的法规（范围很窄，容易误判）</h3>
+  <div class="card" id="tblStatutes" style="padding:0;overflow:hidden"></div>
+
+  <h3>A.4 2025–2026 态势</h3>
+  <div class="card">
+    <ul>
+      <li><b>平台执法重心从 CFAA 转向 ToS + 技术措施 + 反规避（DMCA §1201）+ 付费抓取</b>（Cloudflare pay-per-crawl）。
+        Google 诉 SerpApi 的核心诉因就是这个组合，而不是「你像个机器人」。</li>
+      <li><b>法院开始区分「代理厂商 vs 用户」。</b>第九巡回在 Amazon v. Perplexity 中把 CFAA 的「访问者」认定为用户，
+        并援引 rule of lenity；这直接支持「用户侧浏览器自动化」的架构。但该判决<b>限缩于当前记录</b>，
+        法院同时提示平台方今后应依赖 <b>ToS 限制 + 技术措施</b>。</li>
+      <li><b>诉讼总量确实在增加</b>：Google v. SerpApi（2025-12）、Reddit v. Anthropic（2025-06）、
+        Reddit v. Perplexity（2025-10）、News Corp v. Perplexity——但诉因都是「绕过措施 + 违约 + 转售」。</li>
+      <li><b>最大的未决变量：第三巡回对 Ryanair v. Booking.com 的态度。</b>地院法官认为「C&D 后访问公众用免费账号就能拿到的信息」也构成 CFAA，
+        与第九巡回的 hiQ 路线相左；上诉未决。</li>
+    </ul>
+  </div>
+
+  <h3>A.5 对本项目（inputlab）的具体评估</h3>
+  <p class="sub">以下结论基于对本地代码的核对（文件引用为源码位置），当前整体处于 <b>L1（低风险）</b>。</p>
+  <div class="card" id="tblGates" style="padding:0;overflow:hidden"></div>
+
+  <div class="callout ok">
+    <b>一句话总结：架构越像「用户自己的浏览器」，越安全；越像「一个后台云服务替所有人抓」，越危险。</b>
+    Comet 赢在「请求从用户浏览器发出」，SerpApi 被诉输在「转售」。两者都不是关于「输入像不像人」。
+  </div>
+
+  <div class="callout bad">
+    <b>免责声明：</b>本节不是法律意见，不构成律师-客户关系。所有结论来自公开判例与成文法（截至 2026-09-17），
+    案例仍在进行（Google v. SerpApi、第三巡回 Ryanair）；具体情形请咨询美国执业律师。
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Web Search API 业界调查 · 2026-09-17 快照 · 数据来自厂商官网公开定价页，仅供选型参考
+</footer>
+
+<script>
+/* =========================================================================
+   数据层：全部来自 2026-09-17 官网页面核实
+   字段：name 产品 / vendor 厂商 / cat 类别 / billing 计费机制
+        usd 每千次查询（USD，可归一者）/ cny 每千次（人民币原生）
+        unit 计费单位 / free 免费额度 / qps / src 官网 / ver 核实状态 / note
+        chart=true 表示可进入"每千次查询"价格图
+   ========================================================================= */
+const RATE = 7.2;
+
+const CATS = {
+  '独立索引': {tag:'t-own',   color:'#2563eb'},
+  'AI检索':   {tag:'t-ai',    color:'#7c3aed'},
+  'SERP代抓': {tag:'t-serp',  color:'#dc2626'},
+  '模型内置': {tag:'t-model', color:'#ea580c'},
+  '云厂商':   {tag:'t-cloud', color:'#059669'},
+  '自建':     {tag:'t-self',  color:'#64748b'},
+};
+
+const DATA = [
+  // ---------- 独立索引 ----------
+  {vendor:'Brave', name:'Search API', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:5, chart:true,
+   free:'每月 $5 credit（≈1,000 次）', qps:'50 QPS', src:'brave.com/search/api/', ver:'official',
+   note:'独立 30–40B 页索引；SOC2 Type II + 零数据保留（ZDR）；Answers 另计 $4/1k + $5/M tokens（2 QPS）'},
+  {vendor:'Kagi', name:'Search API', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:12, chart:true,
+   free:'无', qps:'—', src:'kagi.com/api/pricing', ver:'official',
+   note:'满 $100 或每 30 天出账；Extract API 另计 $4/1k 页'},
+  {vendor:'Exa', name:'Search', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:7, chart:true,
+   free:'每月 $10 credit（+注册 $20）', qps:'10–25 QPS', src:'exa.ai/pricing', ver:'official',
+   note:'含最多 10 条结果；每超 10 条再加 $1/1k；Deep $12、Deep-Reasoning $15、Answer $5、Monitors $15'},
+  {vendor:'Exa', name:'Deep Search', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:12, chart:true,
+   free:'同上', qps:'—', src:'exa.ai/pricing', ver:'official', note:'多步检索'},
+  {vendor:'Exa', name:'Deep-Reasoning', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:15, chart:true,
+   free:'同上', qps:'—', src:'exa.ai/pricing', ver:'official', note:'推理型深度检索'},
+  {vendor:'Parallel', name:'Search（Turbo / Fast）', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:1, chart:true,
+   free:'每月 $5 credit（≈5,000 次）', qps:'600 请求/分', src:'parallel.ai/pricing', ver:'official',
+   note:'10 条结果；Turbo ~200ms、Fast ~700ms；Basic/Advanced $5/1k'},
+  {vendor:'Parallel', name:'Search（Basic / Advanced）', cat:'独立索引', billing:'按请求', unit:'每 1k 请求', usd:5, chart:true,
+   free:'同上', qps:'600 请求/分', src:'parallel.ai/pricing', ver:'official', note:'更高召回质量档'},
+
+  // ---------- AI 检索 / 抽取 ----------
+  {vendor:'Tavily', name:'Search（basic）', cat:'AI检索', billing:'credit', unit:'1 credit / 次', usd:8, chart:true,
+   free:'1,000 credits / 月', qps:'—', src:'tavily.com/pricing · docs.tavily.com/documentation/api-credits', ver:'official',
+   note:'PAYG $0.008/credit（=$8/1k）；订阅档 $0.0075–0.005/credit（=$5–7.5/1k）；advanced 搜索 2 credits/次'},
+  {vendor:'Tavily', name:'Search（advanced）', cat:'AI检索', billing:'credit', unit:'2 credits / 次', usd:16, chart:true,
+   free:'同上', qps:'—', src:'tavily.com/pricing', ver:'official', note:'订阅档 $10–15/1k；Extract 每 5 个成功 URL 扣 1–2 credits'},
+  {vendor:'Perplexity', name:'Search API', cat:'AI检索', billing:'按请求', unit:'每 1k 成功请求', usd:5, chart:true,
+   free:'无', qps:'—', src:'docs.perplexity.ai/docs/getting-started/pricing', ver:'official',
+   note:'无 token 费；多查询的单次请求只算一次。Sonar 模型另计 token + 上下文档 $5–14/1k 请求费'},
+  {vendor:'You.com', name:'Web Search API', cat:'AI检索', billing:'按请求', unit:'每 1k 调用', usd:5, chart:true,
+   free:'$100 credit（一次性，≈20,000 次）', qps:'可定制', src:'you.com/pricing', ver:'official',
+   note:'单次最多 100 条结果；Contents $1/1k 页（缓存免费）；SOC2 + ZDR 可选'},
+  {vendor:'Exa', name:'Contents', cat:'AI检索', billing:'按页', unit:'每 1k 页', usd:1, chart:true,
+   free:'每月 $10 credit', qps:'—', src:'exa.ai/pricing', ver:'official', note:'整页正文 / 高亮，供 LLM 上下文'},
+  {vendor:'You.com', name:'Contents API', cat:'AI检索', billing:'按页', unit:'每 1k 页', usd:1, chart:true,
+   free:'$100 credit', qps:'—', src:'you.com/pricing', ver:'official', note:'Markdown / 原始 HTML；缓存命中免费'},
+  {vendor:'Kagi', name:'Extract API', cat:'AI检索', billing:'按页', unit:'每 1k 页', usd:4, chart:true,
+   free:'无', qps:'—', src:'kagi.com/api/pricing', ver:'official', note:'单请求最多 10 个 URL，返回 Markdown'},
+  {vendor:'Firecrawl', name:'Search', cat:'AI检索', billing:'credit', unit:'2 credits / 10 条结果', usd:6.4, chart:true,
+   free:'1,000 credits / 月', qps:'随档位', src:'firecrawl.dev/pricing', ver:'official',
+   note:'按 Hobby $16/5,000 credits 折算（$0.0032/credit）→ $6.4/1k 次搜索；Standard 档折算约 $1.66/1k'},
+  {vendor:'Firecrawl', name:'Scrape', cat:'AI检索', billing:'credit', unit:'1 credit / 页', usd:3.2, chart:true,
+   free:'1,000 credits / 月', qps:'随档位', src:'firecrawl.dev/pricing', ver:'official',
+   note:'Hobby 档折算 $3.2/1k 页；Standard 档约 $0.83/1k 页；Interact 2 credits / 浏览器分钟'},
+  {vendor:'Jina AI', name:'Reader API', cat:'AI检索', billing:'按 token', unit:'每 1M tokens', usd:null, chart:false,
+   free:'新 key 送 10M tokens', qps:'—', src:'jina.ai/reader/', ver:'official',
+   note:'官方 sales 档 $0.045–0.05 / 1M tokens；按 3,300 tokens/页 估算 ≈ $0.15/1k 页；第三方转售价 $0.02/1M 未在官网核实'},
+
+  // ---------- SERP 代抓 ----------
+  {vendor:'Serper', name:'Google Search API', cat:'SERP代抓', billing:'credit', unit:'1 credit / 次', usd:1, chart:true,
+   free:'一次性 2,500 credits', qps:'50–300 QPS', src:'serper.dev', ver:'official',
+   note:'官网首页自称 "starting at $0.30 per 1000 queries"；$50/50k credits = $1/1k；批量低至 $0.3/1k；credits 有有效期'},
+  {vendor:'SerpApi', name:'Google Search API', cat:'SERP代抓', billing:'订阅', unit:'月费档位', usd:25, chart:true,
+   free:'250 次 / 月', qps:'200–6,000/小时', src:'serpapi.com/pricing', ver:'official',
+   note:'Starter $25/1k 次；Developer $75/5k（$15/1k）；Production $150/15k（$10/1k）；Big Data $275/30k（$9.17/1k）；含最高 $2M U.S. Legal Shield'},
+  {vendor:'Google', name:'Custom Search JSON API', cat:'SERP代抓', billing:'按请求', unit:'每 1k 查询', usd:5, chart:true,
+   free:'100 次 / 天（存量用户）', qps:'—', src:'developers.google.com/custom-search/v1/overview', ver:'official',
+   note:'⚠️ 已对新客户关闭，据多方报 2027-01 关停；上限 10k 次/天'},
+  {vendor:'DataForSEO', name:'SERP API', cat:'SERP代抓', billing:'按请求', unit:'每 1k 请求', usd:0.6, chart:true,
+   free:'—', qps:'标准队列', src:'dataforseo.com（官网定价页本次未打开）', ver:'secondary',
+   note:'第三方来源称标准队列 $0.6/1k；未在官网核实，仅作价格下限参考'},
+
+  // ---------- 模型内置 ----------
+  {vendor:'OpenAI', name:'Web search（全模型）', cat:'模型内置', billing:'混合', unit:'每 1k 调用 + tokens', usd:10, chart:true,
+   free:'无', qps:'—', src:'developers.openai.com/api/docs/pricing', ver:'official',
+   note:'$10/1k calls + 检索内容按模型 input 费率计费；gpt-4o-mini / 4.1-mini 非 preview 按每次固定 8,000 input tokens 计'},
+  {vendor:'OpenAI', name:'Web search preview（非推理）', cat:'模型内置', billing:'混合', unit:'每 1k 调用 + tokens', usd:25, chart:true,
+   free:'无', qps:'—', src:'developers.openai.com/api/docs/pricing', ver:'official',
+   note:'$25/1k calls，检索内容 token 免费；推理模型走 $10/1k + tokens'},
+  {vendor:'Anthropic', name:'web_search 工具', cat:'模型内置', billing:'混合', unit:'每 1k 搜索 + tokens', usd:10, chart:true,
+   free:'无', qps:'—', src:'docs.claude.com（定价页本次未渲染出该行）', ver:'secondary',
+   note:'多个来源一致 $10/1k searches + 检索内容按 token；底层使用 Brave 索引；需官网复核'},
+  {vendor:'Google', name:'Grounding with Google Search', cat:'模型内置', billing:'按请求', unit:'每 1k search query', usd:14, chart:true,
+   free:'5,000 次 / 月（Gemini 3.x 共享）', qps:'—', src:'ai.google.dev/gemini-api/docs/pricing', ver:'official',
+   note:'每次搜索查询单独计费（一次提问可能触发多次）；官方明确检索到的上下文不计入 input token；Gemini 2.5 时代为 $35/1k prompts'},
+  {vendor:'Perplexity', name:'Sonar（搜索增强模型）', cat:'模型内置', billing:'混合', unit:'tokens + 每 1k 请求费', usd:5, chart:true,
+   free:'无', qps:'—', src:'docs.perplexity.ai/docs/getting-started/pricing', ver:'official',
+   note:'请求费按搜索上下文档 $5–14/1k；再叠加模型 token 价；Pro Search 另加'},
+
+  // ---------- 云厂商 ----------
+  {vendor:'AWS', name:'Bedrock AgentCore Web Search', cat:'云厂商', billing:'按请求', unit:'每 1k queries', usd:7, chart:true,
+   free:'新账号最多 $200 credits', qps:'—', src:'aws.amazon.com/bedrock/agentcore/pricing/', ver:'announce',
+   note:'$7/1k 出自 AWS 官方公告（2026-06-17）及官方博客；本次定价页表格未渲染出该行。Runtime $0.0895/vCPU-h、Gateway $0.005/1k 调用另计'},
+  {vendor:'Microsoft Azure', name:'Grounding with Bing Search', cat:'云厂商', billing:'按请求', unit:'每 1k transactions', usd:14, chart:true,
+   free:'无（仅付费订阅可用）', qps:'150 TPS / 1M 次每天', src:'microsoft.com/en-us/bing/apis', ver:'official',
+   note:'⚠️ 官方条款：输出不得直接用于其他应用（只能用于 Azure AI Foundry Agent Service / Azure AI Search）；Bing Search API 已于 2025-08-11 退役'},
+  {vendor:'阿里云', name:'联网搜索 · 标准版', cat:'云厂商', billing:'阶梯', unit:'每 1k 次', cny:42, chart:true,
+   free:'新用户开通', qps:'默认 30 QPS（可升档）', src:'help.aliyun.com/zh/document_detail/2862023.html', ver:'official',
+   note:'阶梯 42 / 38 / 34 / 30 元/千次（按日调用量 + QPS 档）；升档需提前一周申请，连续 5 天不达标降档'},
+  {vendor:'阿里云', name:'联网搜索 · 极速版', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:12, chart:true,
+   free:'新用户开通', qps:'默认 10 QPS', src:'help.aliyun.com/zh/document_detail/2862023.html', ver:'official', note:'LiteAdvanced，平均 500ms'},
+  {vendor:'阿里云', name:'联网搜索 · 深度版', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:50, chart:true,
+   free:'新用户开通', qps:'默认 5 QPS', src:'help.aliyun.com/zh/document_detail/2862023.html', ver:'official', note:'Deep，平均 6s'},
+  {vendor:'阿里云', name:'增值包（增强摘要 / 增强版）', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:2.8, chart:true,
+   free:'—', qps:'—', src:'help.aliyun.com/zh/document_detail/2862023.html', ver:'official', note:'LLM 正文切片摘要（前 10 条 URL）；按增值包消耗计'},
+  {vendor:'腾讯云', name:'联网搜索 API · 轻量版', cat:'云厂商', billing:'阶梯', unit:'每 1k 次', cny:18, chart:true,
+   free:'服务调用失败不计费', qps:'版本制', src:'cloud.tencent.com/document/product/1806/121798', ver:'official',
+   note:'按量后付费日结：轻量 18 / 标准 46 / 尊享 60 / 旗舰 80 元/千次'},
+  {vendor:'腾讯云', name:'资源包 · 标准版 100 万次', cat:'云厂商', billing:'预付费包', unit:'每年 100 万次', cny:42, chart:true,
+   free:'—', qps:'—', src:'cloud.tencent.com/document/product/1806/121798', ver:'official',
+   note:'¥42,000/年 = 42 元/千次；5 万次包 ¥1,998（≈40 元/千次）；5000 万次包 ¥1.8M（36 元/千次）'},
+  {vendor:'火山引擎', name:'豆包搜索 · 融合信息搜索 Custom 版', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:20, chart:true,
+   free:'—（另有轻量/探索包月套餐）', qps:'默认 10 QPS', src:'docs.volcengine.com/docs/87772/2272951', ver:'official',
+   note:'0.020 元/次，按加和量日结（后付费）；也有"按搜索总结版 token 数"计费模式；欠费 24h 停服、168h 释放资源'},
+  {vendor:'百度智能云', name:'千帆 · 联网搜索 / 智能搜索生成', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:null, chart:false,
+   free:'100 次 / 天（与"百度搜索"共享额度）', qps:'单账号日上限 10 万次', src:'cloud.baidu.com/doc/qianfan-docs/s/Jm8r1826a', ver:'official',
+   note:'官网价格页正文未给出元/千次单价（需登录控制台查看）；按量后付费'},
+  {vendor:'博查 Bocha', name:'Web Search API', cat:'云厂商', billing:'按请求', unit:'每 1k 次', cny:null, chart:false,
+   free:'官网宣称个人与小团队免费', qps:'—', src:'open.bochaai.com（无公开价目页，/pricing 404）', ver:'secondary',
+   note:'官网首页仅展示 JSON 示例，没有公开价目表；二手信息约 0.02 元/次（≈20 元/千次），云市场另有 AI Search ¥108/千次套餐，均未在官网核实'},
+
+  // ---------- 自建 ----------
+  {vendor:'自建', name:'SearXNG（自托管元搜索）', cat:'自建', billing:'固定成本', unit:'服务器月费', usd:0.83, chart:false,
+   free:'软件免费', qps:'取决于上游与代理池', src:'github.com/searxng/searxng', ver:'official',
+   note:'零边际查询成本，但上游引擎限流、结果质量与稳定性自行承担；按 $6/月 VPS 折算'},
+  {vendor:'自建', name:'inputlab google-cdp（本项目）', cat:'自建', billing:'固定成本', unit:'本机 Chrome', usd:0, chart:false,
+   free:'—', qps:'受封禁策略限制', src:'本地项目 websearch.mjs / daemon.mjs', ver:'official',
+   note:'现金边际成本≈0；成本在 Chrome 进程/窗口、每查询 2–3s、验证码与封禁风险、无 SLA、ToS 灰色'},
+];
+
+/* ---------- 覆盖率数据（2026-09-17 核实） ---------- */
+const INDEX_SIZE = [
+  {name:'Google（官方：数百亿～数千亿页）', v:300, kind:'range',
+   note:'Google 官方 How Search Works 原文："hundreds of billions of webpages / well over 100,000,000 gigabytes"，不给精确页数；300B 为区间示意，非官方数字'},
+  {name:'Brave（官方：40B 页）', v:40, kind:'official',
+   note:'brave.com/blog/search-api-growth/（2026-02）：40 billion Web pages；2025-08 时点官方自报 30B'},
+  {name:'AWS Bedrock AgentCore（官方：数以百亿计）', v:30, kind:'range',
+   note:'AWS 官方博客（2026-06）："a web index that Amazon operates directly, spanning tens of billions of documents"，查询不出 AWS'},
+  {name:'Bing（第三方估算 8–14B）', v:11, kind:'estimate',
+   note:'微软从未公布索引规模；8–14B 为第三方估算值'},
+  {name:'Mojeek（官方：9B 页）', v:9, kind:'official',
+   note:'mojeek.com/about 时间线：2025 年通过 90 亿页（2015 年 10 亿）'},
+  {name:'Common Crawl（单次月度抓取）', v:2.1, kind:'official',
+   note:'2026-06 快照 2.10B 页 / 354 TiB / 4,080 万主机；2026-08 为 2.14B 页 / 360 TiB'},
+];
+
+const COVER = {
+  'Brave':          {src:'自有索引（40B 页，官方）',            risk:'低', ver:'official',   note:'独立于 Google/Bing；英文强，中文长尾弱于百度系'},
+  'Kagi':           {src:'自有 Teclis/TinyGem + 匿名调用「全球所有主要搜索提供方」', risk:'低', ver:'official', note:'官方文档原文：每次查询会同时调用十来个来源 → 覆盖最广的形态，代价是 $12/1k'},
+  'Exa':            {src:'自有抓取 + 神经索引（规模未公开）',    risk:'低', ver:'unknown',    note:'官方未公布索引规模'},
+  'Parallel':       {src:'自有索引（规模未公开）',              risk:'低', ver:'unknown',    note:'官网仅称 highest-accuracy web search API'},
+  'Tavily':         {src:'自有爬虫 + 第三方聚合（hybrid）',      risk:'中', ver:'third-party',note:'Brave 官方文章描述其为 hybrid AI search aggregator；上游变化会影响结果'},
+  'Perplexity':     {src:'自有索引（perplexitybot）',          risk:'低', ver:'third-party',note:'Ahrefs 指出 Perplexity 不依赖 Google/Bing 索引'},
+  'You.com':        {src:'自有抓取（规模未公开）',              risk:'中', ver:'unknown',    note:'官方未公布索引来源细节'},
+  'Firecrawl':      {src:'自有抓取（规模未公开）',              risk:'中', ver:'unknown',    note:'以抓取/渲染为主，search 是检索层'},
+  'Jina AI':        {src:'自有抓取 + 浏览器渲染',              risk:'中', ver:'unknown',    note:'内容层，按 token 计费'},
+  'Serper':         {src:'Google SERP 代抓',                  risk:'高', ver:'third-party',note:'覆盖 = Google；供给与法律风险由厂商承担'},
+  'SerpApi':        {src:'Google SERP 代抓',                  risk:'高', ver:'official',   note:'官方提供 U.S. Legal Shield（最高 $2M）；Google 2025 已对其提起诉讼'},
+  'DataForSEO':     {src:'Google/Bing SERP 代抓',             risk:'高', ver:'secondary',  note:'未在官网核实'},
+  'Google':         {src:'Google 索引（基线）',                risk:'低', ver:'official',   note:'Custom Search JSON API 已对新客户关闭，据多方报 2027-01 关停'},
+  'OpenAI':         {src:'自有爬虫（OAI-SearchBot）+ 未公开索引组合', risk:'中', ver:'unknown', note:'模型内置工具，返回加工后的结果'},
+  'Anthropic':      {src:'多方报道使用 Brave 索引（未官方确认）', risk:'中', ver:'secondary', note:'$10/1k + 检索内容 token'},
+  'AWS':            {src:'Amazon 自建索引（tens of billions）', risk:'低', ver:'official',  note:'AWS 官方博客：索引由 Amazon 直接运营，查询不出 AWS'},
+  'Microsoft Azure':{src:'Bing 索引',                          risk:'中', ver:'official',  note:'官方条款限制输出不得用于其他应用'},
+  '阿里云':         {src:'阿里生态 + 自建 + 聚合（未公开）',    risk:'中', ver:'unknown',   note:'官网计费文档未披露索引来源'},
+  '腾讯云':         {src:'搜狗系索引（未官方确认）',            risk:'中', ver:'secondary', note:'腾讯持有搜狗，文档未明示'},
+  '火山引擎':       {src:'字节自建索引（规模未公开）',          risk:'中', ver:'unknown',   note:'官方文档只给计费，不给索引口径'},
+  '百度智能云':     {src:'百度自建索引（中文覆盖最强）',        risk:'低', ver:'official',  note:'价格页未公开单价'},
+  '博查 Bocha':     {src:'自建 + 聚合（未公开）',              risk:'中', ver:'secondary', note:'官网无价目页'},
+  '自建':           {src:'取决于自己（SearXNG 聚合上游 / 本项目抓 Google）', risk:'高', ver:'official', note:'SearXNG 上游限流；google-cdp 受封禁策略影响'},
+};
+
+const OVERLAP = [
+  ['Yagci et al. 2022（学术）','63 条查询 × Google / Bing / DuckDuckGo / MetaGer 等，逐条比较结果重叠','Google vs Bing 的 top-1 重叠仅 31%；Bing vs DDG 为 15%；Google–Bing 整体重叠始终 <32%'],
+  ['Ahrefs 2025（15,000 prompts）','AI 助手引用 vs Google / Bing 同一 prompt 的 Top 10','平均只有 12% 的 AI 引用进入 Google Top 10；80% 的引用页面在 Google 上「完全没有排名」'],
+  ['Ahrefs 2025（分助手）','同上，按助手拆分','Perplexity 28.6%（最高）、Copilot 8.6%、Gemini 8.0%、ChatGPT 6.1%；Bing 侧平均约 10%'],
+  ['Artificial Analysis 2026','同一模型 + 同一 agent 框架，仅替换搜索供应商，三项基准等权','Parallel 75、Exa 74、Firecrawl 73；无搜索基线仅 33；已测供应商整体落在 65–75'],
+  ['StatCounter 2025-08 → 2026-08','全球搜索引擎市场份额（需求侧代理指标）','Google 91.02%、Bing 4.55%、Yandex 1.01%'],
+  ['Brave 官方（2026-02）','供给侧格局陈述','Bing 公开 API 关闭 + Google 起诉 SerpApi 后，西方可商用的大规模独立索引 API 只剩 Brave 一家'],
+];
+
+const AICITE = [
+  {name:'Perplexity', v:28.6, color:'#0891b2'},
+  {name:'平均（5 项）', v:11.9, color:'#6b7280'},
+  {name:'Copilot', v:8.6, color:'#0d9488'},
+  {name:'Gemini', v:8.0, color:'#f59e0b'},
+  {name:'ChatGPT', v:6.1, color:'#ea580c'},
+];
+
+const AA_BENCH = [
+  {name:'Parallel', v:75, color:'#0ea5e9'},
+  {name:'Exa', v:74, color:'#0891b2'},
+  {name:'Firecrawl', v:73, color:'#dc2626'},
+  {name:'其余 4 家（区间 65–75）', v:70, range:[65,75], color:'#9ca3af'},
+  {name:'无搜索（模型单答基线）', v:33, color:'#6b7280'},
+];
+
+const SELFTEST = [
+  ['召回率（核心）','准备 30–50 个「已知答案页面」（收藏夹 / sitemap / 近一周新页），为每页写一条不含域名的查询，逐家 API 跑同一批','recall@10 / recall@50 / MRR'],
+  ['互补率（最有指导性）','以 Google（或本项目 google-cdp）为基线，统计其他引擎召回了多少 Google 未召回的目标页','互补率 = 其他引擎独有命中 ÷ 总命中'],
+  ['长尾覆盖','构造 50 个冷门专有名词（小众库、型号、人名、论文标题）','命中率 + 首条相关性人工打分'],
+  ['新鲜度','用 T-1h / T-1d 发布的页面查询，看结果中 <24h 内容的占比','新页命中率、平均时延'],
+  ['中文覆盖','同一批查询中英双语各跑一遍','中文命中率 − 英文命中率（差距越大越依赖国内厂商）'],
+  ['结果多样性','统计同查询 Top10 的独立域名数、大站占比','独立域名数、Top10 中大站比例'],
+  ['成本口径','记录每次查询实际扣费（请求 / credit / token / 阶梯）','$/有效结果（不是 $/调用）'],
+];
+
+/* ---------- 附录 A：美国法律风险（2026-09-17 核实的判例） ---------- */
+const CASES = [
+  {name:'Amazon v. Perplexity（Comet 浏览器）', court:'第九巡回', date:'2026-08-04', level:'good',
+   hold:'撤销对 Perplexity 的初步禁令：Comet 由用户经自己的浏览器发起、浏览器与 Amazon 通信、代理只回传截屏与指令，Perplexity 服务器从未直接与 Amazon 通信——CFAA 下的「访问者」是用户，不是代理厂商；并援引 rule of lenity。',
+   effect:'✅ 对「用户侧浏览器自动化」最有利的判例（限缩于当前记录；法院提示平台应改依赖 ToS + 技术措施）'},
+  {name:'Meta v. Bright Data', court:'N.D. Cal.', date:'2024-01-23', level:'good',
+   hold:'CFAA / CDAFA 主张被驳回；违约主张仅在有直接合同关系期间保留；Meta 随后撤诉并放弃上诉。',
+   effect:'✅ 公开数据抓取的强先例；「浏览即同意」的 browsewrap ToS 效力弱'},
+  {name:'X Corp v. Bright Data', court:'N.D. Cal.', date:'2024-05', level:'good',
+   hold:'X 针对抓取公开数据的主张被驳回。', effect:'✅ 同向判例'},
+  {name:'Van Buren v. United States', court:'美国最高法院', date:'2021-06-03', level:'good',
+   hold:'「超过授权访问」指进入你本无权进入的区域（gates-up-or-down）；违反使用政策 / ToS 本身不构成 CFAA 违法。',
+   effect:'✅ ToS 不能升格为联邦责任'},
+  {name:'hiQ Labs v. LinkedIn', court:'第九巡回（2019 / 2022）', date:'2022-04-18', level:'mixed',
+   hold:'抓取公开数据「很可能不」违反 CFAA（公开网页没有可升降的 gate）。但 2022-11 法院认定 hiQ 违反用户协议；2022-12 同意判决：$500,000 + 永久禁令 + 删除数据与算法。',
+   effect:'⚠️ 双刃：CFAA 赢、合同输——「抓公开数据合法」不等于「不赔钱」'},
+  {name:'Ryanair v. Booking.com', court:'D. Del.（第三巡回审理中）', date:'2024-07 陪审团 / 2025-07 JMOL', level:'mixed',
+   hold:'陪审团认定 CFAA 违反；法官以「未证明 $5,000 损失」推翻（JMOL），但同时认为 C&D 后访问「公众用免费账号就能拿到的信息」也构成 CFAA；Ryanair 已上诉，第三巡回未决。',
+   effect:'⚖️ 当前最大不确定性：若维持，将削弱第九巡回的 hiQ 路线'},
+  {name:'Google v. SerpApi', court:'N.D. Cal.', date:'2025-12 起诉 / 2026-07-20 部分驳回', level:'mixed',
+   hold:'Google 主张 SerpApi「绕过安全措施复制并转售搜索结果」（DMCA §1201）；法院驳回，认为 Google 未合理主张其反抓取系统「经版权人授权」；Google 2026-08 提交修正起诉状，诉讼继续（有报道称索赔 $2.8M）。',
+   effect:'🎯 唯一直接针对「抓 Google 搜索」的诉讼——核心指控是反规避 + 转售，不是人类化操作'},
+  {name:'Meta v. BrandTotal', court:'N.D. Cal.', date:'2022-06', level:'bad',
+   hold:'分界线：Meta 撤销授权（2021-02-26）之前访问不违反 CFAA；之后继续访问 → CFAA 成立；同时违反 ToS 成立，法院给予永久禁令。',
+   effect:'⛔ 关键开关：被撤销授权后继续 = CFAA'},
+  {name:'Facebook v. Power Ventures', court:'第九巡回', date:'2016', level:'bad',
+   hold:'收到 C&D + IP 封锁后继续访问 = CFAA。', effect:'⛔ 撤销授权后继续'},
+  {name:'Craigslist v. 3Taps', court:'N.D. Cal.', date:'2013', level:'bad',
+   hold:'C&D + IP 封锁后通过代理 / 换 IP 继续访问 → CFAA 主张成立。', effect:'⛔ 换出口继续 = 把自己送进这一档'},
+  {name:'Ticketmaster v. Prestige', court:'第九巡回', date:'2020', level:'bad',
+   hold:'用 bot + CAPTCHA 农场绕过安全措施 → CFAA「without authorization」；并涉 BOTS Act。', effect:'⛔ 破解验证码是明确红线'},
+  {name:'Southwest v. Kiwi.com', court:'N.D. Tex.', date:'2021-09', level:'mixed',
+   hold:'认定有效合同 + 违约（无视 C&D 继续抓取），批准初步禁令。', effect:'⚠️ 合同责任比 CFAA 更容易成立'},
+  {name:'Reddit v. Anthropic / Reddit v. Perplexity', court:'加州州法院 / SF', date:'2025-06 / 2025-10', level:'mixed',
+   hold:'违约 + 绕过技术措施抓取 10 万+ 次。', effect:'⚠️ 新一波诉讼的共同诉因：绕过措施 + 违约'},
+];
+
+const RISK_LEVELS = [
+  {lv:'L1 低', color:'#059669', title:'公开页面 · 不登录 · 不绕验证码 · 遇阻即停',
+   basis:'hiQ / Meta v. Bright Data / X v. Bright Data / Amazon v. Perplexity',
+   detail:'只读取任何人用浏览器都能看到的页面；不接验证码服务、不接代理池、不登账号。'},
+  {lv:'L2 中', color:'#d97706', title:'违反 ToS 持续抓取（无 C&D）',
+   basis:'hiQ（$500,000 + 永久禁令）/ Meta v. BrandTotal / Southwest v. Kiwi.com',
+   detail:'合同责任，通常表现为禁令 + 名义/实际损害赔偿；browsewrap ToS 效力较弱，但输了就是禁令。'},
+  {lv:'L3 高', color:'#dc2626', title:'收到 C&D 或被 IP 封锁后仍继续（尤其换 IP / 代理 / 账号）',
+   basis:'Power Ventures / 3Taps / BrandTotal（2021-02-26 之后）/ Ryanair',
+   detail:'这是唯一能把「抓公开数据」变成 CFAA 违反的开关，也是真实败诉案例的共同事实。'},
+  {lv:'L4 极高', color:'#7f1d1d', title:'绕过 CAPTCHA / 限流 / 登录墙 / 付费墙，用假账号，或转售数据',
+   basis:'Ticketmaster v. Prestige（CFAA）/ Google v. SerpApi（DMCA §1201）/ BOTS Act（票务）',
+   detail:'多重诉因叠加，损害赔偿量级上升；转售是 SerpApi 被诉的直接原因。'},
+];
+
+const STATUTES = [
+  ['BOTS Act（15 U.S.C. §45c，2016）','仅票务：绕过安全措施 / 访问控制以购票','用 bot 绕过购票限制','FTC / DOJ 执法，2021 年首次执法','不覆盖「读取搜索结果」这类行为'],
+  ['加州 B.O.T. Act（SB 1001，B&P §17941）','用 bot 冒充人类以促成商业交易或选举且不披露','与人的商业互动（自动下单 / 询价 / 拉票）','加州 UCL，最高 $2,500 / 次 + 禁令','不覆盖纯读取；若做成对外服务并自动下单，需评估披露义务'],
+];
+
+const GATES = [
+  ['永不登录','代码全库无 login / account 使用（grepped）','保持为硬约束：一旦接入登录态，就从「公开数据」跨界到「授权访问」——hiQ 正是死在雇人开假账号','hiQ（违约部分）'],
+  ['验证码：只检测不破解','google_flow.mjs:305-313 / websearch_stream.mjs:81 只做拦截页特征识别','升级为硬熔断：检测到 /sorry/ 或可见 reCAPTCHA → 终止任务 + 冷却 + 记录证据（而不是重试）','Ticketmaster v. Prestige'],
+  ['出口 IP：单出口不轮换','browser.mjs:176：本机固定代理 127.0.0.1:1087（直连型，非 MITM）','保持单一稳定出口；禁止接入代理池做规避——换 IP 继续访问正是 3Taps 的败因','Craigslist v. 3Taps / BrandTotal'],
+  ['并发与速率','daemon 默认 concurrency=8','真站降到 2–3 并加上「≤ 1 次搜索 / 分钟」类显式限流（项目计划里已有此约束）','「绕过访问限制」指控中的常见事实'],
+  ['仅自用，不转售','当前为本地工具','不要包装成对外搜索 API / 不转售结果——这是 Google 诉 SerpApi 的直接原因','Google v. SerpApi'],
+  ['留痕：证明「遇阻即停」','目前无合规日志','记录时间线：只访问公开页面、无登录、无验证码破解、收到阻断即停止','BrandTotal / Ryanair 的败因都是「被挡后继续」'],
+];
+
+
+/* ---------- 附加数据：免费额度 / 月成本 ---------- */
+const FREE_TIER = [
+  {name:'You.com（一次性）', v:20000, once:true},
+  {name:'Parallel', v:5000, once:false},
+  {name:'Gemini Grounding', v:5000, once:false},
+  {name:'百度千帆', v:3000, once:false, est:true},
+  {name:'Jina Reader（页数估算）', v:3000, once:false, est:true},
+  {name:'Serper（一次性）', v:2500, once:true},
+  {name:'Exa', v:1428, once:false},
+  {name:'Brave', v:1000, once:false},
+  {name:'Tavily', v:1000, once:false},
+  {name:'Firecrawl（搜索次数）', v:500, once:false},
+  {name:'SerpApi', v:250, once:false},
+];
+
+const COST_SERIES = [
+  {name:'Parallel Turbo', usd:1,   color:'#0ea5e9', key:true},
+  {name:'Serper（$1/1k）', usd:1,  color:'#dc2626', key:true},
+  {name:'Brave', usd:5,            color:'#2563eb', key:true},
+  {name:'Tavily（PAYG）', usd:8,   color:'#7c3aed', key:true},
+  {name:'Exa Search', usd:7,       color:'#0891b2', key:false},
+  {name:'AWS AgentCore', usd:7,    color:'#059669', key:false},
+  {name:'OpenAI（+tokens 另计）', usd:10, color:'#ea580c', key:true},
+  {name:'Gemini Grounding', usd:14,color:'#f59e0b', key:true},
+  {name:'Azure Bing Grounding', usd:14, color:'#0d9488', key:false},
+  {name:'SerpApi（最优档）', usd:9.17, color:'#b91c1c', key:false},
+  {name:'Kagi', usd:12,            color:'#6b7280', key:false},
+];
+const COST_VOLUMES = [1000, 10000, 100000, 1000000];
+
+const CN_TIERS = {
+  aliyun: {
+    name:'阿里云 · 联网搜索标准版（阶梯，元/千次）',
+    points:[{x:'30 QPS 阶梯1',v:42},{x:'30 QPS 阶梯2',v:38},{x:'30 QPS 阶梯3',v:34},{x:'30 QPS 阶梯4',v:30}],
+    color:'#ea580c', note:'按日调用量整体落档：0–20万 / 20万–35万 / 35万–60万 / ≥60万'
+  },
+  tencent: {
+    name:'腾讯云 · 按量后付费（版本制，元/千次）',
+    points:[{x:'轻量版',v:18},{x:'标准版',v:46},{x:'尊享版',v:60},{x:'旗舰版',v:80}],
+    color:'#2563eb', note:'尊享/旗舰仅企业用户'
+  },
+  volc: {
+    name:'火山引擎 · 豆包搜索 Custom 版（元/千次）',
+    points:[{x:'融合信息搜索 web',v:20}],
+    color:'#059669', note:'0.020 元/次，日结'
+  },
+  ali_lite: {name:'阿里云 · 极速版 / 深度版 / 多模态', points:[{x:'极速版',v:12},{x:'多模态',v:25},{x:'深度版',v:50}], color:'#7c3aed', note:''}
+};
+
+const BILLING_EXPLAIN = {
+  '按请求':['单一价格 × 调用次数，最可预测。','代表：Brave、Kagi、Exa、Parallel、Perplexity Search、You.com、AWS、Azure、Gemini'],
+  'credit':['预充值 credit，每次操作按类型扣 1–N 个；注意有效期与"高级模式扣更多"。','代表：Tavily（basic 1 / advanced 2）、Firecrawl（search 2/10 结果、scrape 1/页）、Serper（有有效期）'],
+  '订阅':['月费换固定次数 + 吞吐上限，超量停或加档。','代表：SerpApi（$25/1k → $275/30k）'],
+  '按页':['按抓取的页面数计价，与查询无关。','代表：Exa Contents、You.com Contents、Kagi Extract'],
+  '按token':['按内容 token 数计价，页面越长越贵。','代表：Jina Reader'],
+  '阶梯':['按量落档，单价随规模下降，但常与 QPS 规格绑定。','代表：阿里云、腾讯云'],
+  '预付费包':['一次买断资源包，单价更低但有有效期。','代表：腾讯云、火山引擎包月套餐'],
+  '混合':['调用费 + 检索内容 token 费双重计费；搜索次数可能由模型决定，成本上界不可控。','代表：OpenAI、Anthropic、Perplexity Sonar、Gemini（按 query 多次计费）'],
+  '固定成本':['与查询量无关的固定支出。','代表：SearXNG 自托管、本项目 google-cdp'],
+};
+
+const QUAD = [
+  {name:'Parallel Turbo', x:1, y:3, cat:'独立索引'},
+  {name:'Serper', x:1, y:1, cat:'SERP代抓'},
+  {name:'SerpApi', x:25, y:1, cat:'SERP代抓'},
+  {name:'Google CSE', x:5, y:1, cat:'SERP代抓'},
+  {name:'DataForSEO', x:0.6, y:1, cat:'SERP代抓'},
+  {name:'Brave', x:5, y:3, cat:'独立索引'},
+  {name:'Exa Search', x:7, y:3, cat:'独立索引'},
+  {name:'Kagi', x:12, y:3, cat:'独立索引'},
+  {name:'Tavily', x:8, y:3, cat:'AI检索'},
+  {name:'Perplexity Search', x:5, y:3, cat:'AI检索'},
+  {name:'You.com', x:5, y:3, cat:'AI检索'},
+  {name:'AWS AgentCore', x:7, y:2.5, cat:'云厂商'},
+  {name:'Azure Bing', x:14, y:2.5, cat:'云厂商'},
+  {name:'阿里云 极速版', x:1.67, y:2.5, cat:'云厂商'},
+  {name:'火山豆包', x:2.78, y:2.5, cat:'云厂商'},
+  {name:'腾讯轻量', x:2.5, y:2.5, cat:'云厂商'},
+  {name:'Gemini Grounding', x:14, y:2, cat:'模型内置'},
+  {name:'OpenAI web search', x:10, y:2, cat:'模型内置'},
+  {name:'Anthropic web_search', x:10, y:2, cat:'模型内置'},
+  {name:'SearXNG 自托管', x:0.83, y:3.5, cat:'自建', flat:true},
+];
+
+const TRAPS = [
+  ['模型内置：一次提问可能扣 N 次搜索费','Gemini 官方定价页原文：「客户向 Gemini 提交的请求可能会触发一次或多次 Google 搜索查询。每执行一次搜索查询，系统都会单独计费。」→ 成本上界取决于模型行为，必须自行设 max_searches / 预算闸门。'],
+  ['调用费 + 内容 token 双计费','OpenAI：「$10.00 / 1k calls + Search content tokens billed at model rates」；非推理 preview 则是 $25/1k 且内容 token 免费——同一家两套规则。Anthropic 同为 $10/1k + token。'],
+  ['credit 会过期','Serper 采用 credit 池，credits 有有效期（第三方一致称 6 个月）；买多了等于负债。Tavily / Firecrawl 的 credit 也需确认过期策略。'],
+  ['"每千次"计数口径不一致','Perplexity Search API 按「成功请求」计，多查询的单次请求只算一次；Tavily advanced 搜索扣 2 credits；Firecrawl search 是「2 credits / 10 条结果」。比较前必须先统一口径。'],
+  ['云厂商的 QPS 规格与阶梯绑定','阿里云默认 30 QPS，升档需提前一周申请，连续 5 天不达量会降档——即"用不起的量级也拿不到低价"。腾讯/火山为版本制或日结，欠费会停服/释放资源。'],
+  ['Azure Grounding 的输出不能外用','官方原文：「Outputs are not directly accessible for use in other applications or programs.」→ 想拿原始链接喂自己的 Agent，这条路直接排除。'],
+  ['代抓 SERP 的供给正在消失','Bing Search API 2025-08-11 退役；Google Custom Search JSON API 已对新客户关闭、据多方报 2027-01 关停。剩余代抓厂商的法律与断供风险需要计入。'],
+  ['按页接口的"缓存免费"要单独确认','You.com Contents 明确「Pages served from cache are free」；这类条款会显著改变实际成本，务必读原文而不是看标价。'],
+];
+
+const TCO_ROWS = [
+  ['每月查询量','1,000 次','3,000 次','10,000 次','100,000 次'],
+  ['自建 CDP：现金支出','¥0–50','¥0–50','¥0–50','¥0–50（需更多机器/代理）'],
+  ['自建 CDP：维护工时（4h/月 × ¥200）','¥800','¥800','¥800','¥800–2,000'],
+  ['自建 CDP：封禁/改版摊销','≈¥170/月（按每季度半天）','≈¥170/月','≈¥330/月','≈¥670/月'],
+  ['自建合计（估）','≈¥970','≈¥970','≈¥1,180','≈¥1,520–2,720'],
+  ['API：Brave（$5/1k）','≈¥36','≈¥108','≈¥360','≈¥3,600'],
+  ['API：Parallel Turbo（$1/1k）','≈¥7','≈¥22','≈¥72','≈¥720'],
+  ['API：火山豆包（¥20/千次）','¥20','¥60','¥200','¥2,000'],
+  ['结论','自建更便宜','临界点附近','API 明显更优','API 压倒性更优'],
+];
+
+/* =========================================================================
+   工具函数
+   ========================================================================= */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const fmtUSD = v => v==null ? '—' : (v<1 ? '$'+v.toFixed(2) : '$'+v.toLocaleString('en-US',{maximumFractionDigits:2}));
+const fmtCNY = v => v==null ? '—' : (v<1 ? '¥'+v.toFixed(2) : '¥'+v.toLocaleString('zh-CN',{maximumFractionDigits:2}));
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function priceOf(d, cur='usd'){
+  if(d.unit && (d.unit.includes('页')||d.unit.includes('tokens'))){
+    const usd = d.usd; return cur==='usd'? usd : (usd==null?null:usd*RATE);
+  }
+  if(d.cny!=null) return cur==='cny' ? d.cny : d.cny/RATE;
+  return cur==='usd' ? d.usd : (d.usd==null?null:d.usd*RATE);
+}
+function per1kUSD(d){
+  if(d.usd!=null) return d.usd;
+  if(d.cny!=null) return d.cny/RATE;
+  return null;
+}
+function tag(cat){const c=CATS[cat];return `<span class="tag ${c.tag}">${esc(cat)}</span>`;}
+function verLabel(v){return {official:'官网核实',announce:'官方公告',secondary:'二手来源'}[v]||v;}
+function riskClass(r){return r==='低'?'v-official':(r==='中'?'v-announce':'v-secondary');}
+
+/* =========================================================================
+   KPI 卡片
+   ========================================================================= */
+(function(){
+  const chartable = DATA.filter(d=>d.chart && per1kUSD(d)!=null);
+  const vals = chartable.map(per1kUSD).sort((a,b)=>a-b);
+  const median = vals[Math.floor(vals.length/2)];
+  const min = vals[0], max = vals[vals.length-1];
+  const kpis = [
+    {v:fmtUSD(median), l:'每千次查询价格中位数', n:`${fmtUSD(min)} – ${fmtUSD(max)} 区间；≈${fmtCNY(median*RATE)}/1k 次`},
+    {v:fmtUSD(min), l:'最低自建索引档（Parallel Turbo）', n:'≈¥'+ (min*RATE).toFixed(3) +'/次；$5/月 credit ≈ 5,000 次'},
+    {v:'5 种', l:'计费机制', n:'按请求 / credit / 订阅 / 按页 / 按 token / 混合，另有阶梯与包月'},
+    {v:'2,000–3,000 次/月', l:'自建 vs 采购的临界点', n:'低于此自建划算；高于此 API 总拥有成本更优'},
+  ];
+  $('#kpis').innerHTML = kpis.map(k=>`<div class="kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="n">${k.n}</div></div>`).join('');
+})();
+
+/* =========================================================================
+   方案地图卡片
+   ========================================================================= */
+(function(){
+  const groups = [
+    {cat:'独立索引', title:'独立索引 API', desc:'厂商自建索引，不依赖抓 Google。稳定性与合规性最好，适合长期作为主路。',
+     items:DATA.filter(d=>d.cat==='独立索引').map(d=>d.vendor+' · '+d.name)},
+    {cat:'AI检索', title:'AI 检索 / 抽取', desc:'搜索 + 正文提取一体化，直接产出 LLM 友好内容，可替代自建 Readability 层。',
+     items:DATA.filter(d=>d.cat==='AI检索').map(d=>d.vendor+' · '+d.name)},
+    {cat:'SERP代抓', title:'SERP 代抓', desc:'结果与 Google 一致，单价最低，但属法律灰色外包，且供给正在减少。',
+     items:DATA.filter(d=>d.cat==='SERP代抓').map(d=>d.vendor+' · '+d.name)},
+    {cat:'模型内置', title:'模型内置工具', desc:'零集成成本，但结果是模型加工过的、计费按模型行为决定，成本上界不可控。',
+     items:DATA.filter(d=>d.cat==='模型内置').map(d=>d.vendor+' · '+d.name)},
+    {cat:'云厂商', title:'云厂商第一方', desc:'国内可获得性与合规性最好；单价中等偏高，常有 QPS 报备、阶梯、日结等工程约束。',
+     items:DATA.filter(d=>d.cat==='云厂商').map(d=>d.vendor+' · '+d.name)},
+    {cat:'自建', title:'自建 / 免费', desc:'零边际现金成本，成本在维护、封禁风险与结果质量上；适合作为兜底与特定场景。',
+     items:DATA.filter(d=>d.cat==='自建').map(d=>d.vendor+' · '+d.name)},
+  ];
+  $('#mapCards').innerHTML = groups.map(g=>{
+    const c = CATS[g.cat];
+    return `<div class="card" style="border-top:3px solid ${c.color}">
+      <div style="display:flex;align-items:center;gap:8px"><span class="tag ${c.tag}">${g.cat}</span>
+      <b>${g.title}</b><span class="small" style="color:#6b7280">${g.items.length} 项</span></div>
+      <p class="small" style="color:#4b5563;margin:8px 0">${g.desc}</p>
+      <div class="small" style="color:#374151">${g.items.map(i=>'· '+esc(i)).join('<br>')}</div>
+    </div>`;
+  }).join('');
+})();
+
+/* =========================================================================
+   图 1：价格总览（可切换 log/linear、USD/CNY）
+   ========================================================================= */
+let priceScale='log', priceCur='usd';
+function renderPrice(){
+  const items = DATA.filter(d=>d.chart && per1kUSD(d)!=null)
+    .map(d=>({d, v: priceOf(d, priceCur)}))
+    .sort((a,b)=>a.v-b.v);
+  const W=980, padL=230, padR=120, rowH=24, H=items.length*rowH+54;
+  const vals = items.map(i=>i.v);
+  const minV=Math.min(...vals), maxV=Math.max(...vals);
+  const lo = Math.max(minV*0.6, 0.05);
+  const sx = v => {
+    const t = priceScale==='log'
+      ? (Math.log10(Math.max(v,lo)) - Math.log10(lo)) / (Math.log10(maxV) - Math.log10(lo))
+      : v/maxV;
+    return padL + t*(W-padL-padR);
+  };
+  const ticks = priceScale==='log'
+    ? [0.3,0.5,1,2,5,10,20,50].filter(t=>t>=lo&&t<=maxV)
+    : Array.from({length:6},(_,i)=>maxV*i/5);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img">`;
+  ticks.forEach(t=>{ s += `<line x1="${sx(t)}" y1="30" x2="${sx(t)}" y2="${H-18}" stroke="#e5e7eb"/>
+    <text x="${sx(t)}" y="22" font-size="10" fill="#6b7280" text-anchor="middle">${priceCur==='usd'?fmtUSD(t):fmtCNY(t)}</text>`;});
+  items.forEach((it,i)=>{
+    const y = 34 + i*rowH, c = CATS[it.d.cat].color;
+    const x2 = sx(it.v), w = Math.max(2, x2-padL);
+    s += `<text x="${padL-8}" y="${y+11}" font-size="11.5" fill="#111827" text-anchor="end">${esc(it.d.vendor+' · '+it.d.name)}</text>`;
+    s += `<rect x="${padL}" y="${y+1}" width="${w.toFixed(1)}" height="14" rx="3" fill="${c}" opacity="0.88"><title>${esc(it.d.vendor+' · '+it.d.name)}
+${esc(it.d.unit)}：${priceCur==='usd'?fmtUSD(it.v):fmtCNY(it.v)}
+来源：${esc(it.d.src)}（${verLabel(it.d.ver)}）</title></rect>`;
+    s += `<text x="${x2+6}" y="${y+12}" font-size="11" fill="#374151">${priceCur==='usd'?fmtUSD(it.v):fmtCNY(it.v)}</text>`;
+  });
+  s += `<text x="6" y="${H-3}" font-size="10" fill="#9ca3af">每千次查询 · ${priceScale==='log'?'对数':'线性'}刻度 · 抓取 2026-09-17</text></svg>`;
+  $('#chartPrice').innerHTML = s;
+  $('#legend1').innerHTML = Object.entries(CATS).map(([k,v])=>`<span><i style="background:${v.color}"></i>${k}</span>`).join('');
+}
+$$('#price .chip').forEach(b=>b.onclick=()=>{
+  const s=b.dataset.scale;
+  if(s){priceScale=s; $$('#price .chip[data-scale]').forEach(x=>x.classList.toggle('on',x===b));}
+  else {priceCur = b.id==='btnCNY'?'cny':'usd'; $('#btnUSD').classList.toggle('on',priceCur==='usd'); $('#btnCNY').classList.toggle('on',priceCur==='cny');}
+  renderPrice();
+});
+renderPrice();
+
+/* =========================================================================
+   图 2：月成本曲线
+   ========================================================================= */
+(function(){
+  const W=980,H=420,padL=78,padR=210,padT=26,padB=44;
+  const xs=COST_VOLUMES, ys = xs.map(n=>n*0);
+  const all=[];
+  COST_SERIES.forEach(se=>COST_VOLUMES.forEach(n=>all.push(se.usd*(n/1000))));
+  all.push(6); // SearXNG 固定
+  const maxY=Math.max(...all), minY=Math.min(...all.filter(v=>v>0));
+  const sx = n => padL + (Math.log10(n)-3)/(6-3)*(W-padL-padR);
+  const sy = v => H-padB - (Math.log10(Math.max(v,0.5))-Math.log10(0.5))/(Math.log10(maxY)-Math.log10(0.5))*(H-padT-padB);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  // grid
+  [1,10,100,1000,10000,100000].filter(v=>v<=maxY*1.1).forEach(v=>{
+    s+=`<line x1="${padL}" y1="${sy(v)}" x2="${W-padR}" y2="${sy(v)}" stroke="#eef0f3"/>
+        <text x="${padL-8}" y="${sy(v)+4}" font-size="10" fill="#6b7280" text-anchor="end">${fmtUSD(v)}</text>`;});
+  xs.forEach(n=>{ s+=`<line x1="${sx(n)}" y1="${padT}" x2="${sx(n)}" y2="${H-padB}" stroke="#eef0f3"/>
+    <text x="${sx(n)}" y="${H-padB+18}" font-size="11" fill="#374151" text-anchor="middle">${n>=1000? (n/1000)+'k':'n'} 次/月</text>`;});
+  // SearXNG flat
+  s+=`<line x1="${padL}" y1="${sy(6)}" x2="${sx(1e6)}" y2="${sy(6)}" stroke="#64748b" stroke-dasharray="5 4" stroke-width="2"/>
+      <text x="${sx(1e6)+5}" y="${sy(6)+4}" font-size="10.5" fill="#64748b">SearXNG 自托管（固定 ≈$6/月）</text>`;
+  COST_SERIES.forEach(se=>{
+    const pts = COST_VOLUMES.map(n=>[sx(n), sy(se.usd*(n/1000))]);
+    const d = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${se.key?2.6:1.5}" opacity="${se.key?1:.55}"/>`;
+    pts.forEach((p,i)=>{ s+=`<circle cx="${p[0]}" cy="${p[1]}" r="${se.key?3:2.2}" fill="${se.color}"><title>${esc(se.name)}：${COST_VOLUMES[i].toLocaleString()} 次/月 → ${fmtUSD(se.usd*(COST_VOLUMES[i]/1000))}/月</title></circle>`;});
+    const last=pts[pts.length-1];
+    s+=`<text x="${last[0]+7}" y="${last[1]+4}" font-size="10.5" fill="${se.color}">${esc(se.name)}</text>`;
+  });
+  s+=`<text x="6" y="${H-6}" font-size="10" fill="#9ca3af">线性外推自官网单价；不含 token 费与一次性额度抵扣</text></svg>`;
+  $('#chartCost').innerHTML=s;
+})();
+
+/* ---------- 月成本速查表 ---------- */
+(function(){
+  const rows = DATA.filter(d=>d.chart && per1kUSD(d)!=null).sort((a,b)=>per1kUSD(a)-per1kUSD(b));
+  let h = `<table><thead><tr><th>厂商 / 产品</th><th>类别</th><th class="num">1k 次/月</th><th class="num">10k 次/月</th><th class="num">100k 次/月</th><th class="num">1M 次/月</th></tr></thead><tbody>`;
+  rows.forEach(d=>{
+    const p = per1kUSD(d);
+    h += `<tr><td>${esc(d.vendor+' · '+d.name)}</td><td>${tag(d.cat)}</td>
+      <td class="num">${fmtUSD(p)}<br><span class="small" style="color:#6b7280">${fmtCNY(p*RATE)}</span></td>
+      <td class="num">${fmtUSD(p*10)}<br><span class="small" style="color:#6b7280">${fmtCNY(p*10*RATE)}</span></td>
+      <td class="num">${fmtUSD(p*100)}<br><span class="small" style="color:#6b7280">${fmtCNY(p*100*RATE)}</span></td>
+      <td class="num">${fmtUSD(p*1000)}<br><span class="small" style="color:#6b7280">${fmtCNY(p*1000*RATE)}</span></td></tr>`;
+  });
+  h+='</tbody></table>';
+  $('#costTable').innerHTML=h;
+})();
+
+/* =========================================================================
+   图 3：国内云厂商价格
+   ========================================================================= */
+(function(){
+  const groups=[CN_TIERS.aliyun, CN_TIERS.tencent, CN_TIERS.ali_lite, CN_TIERS.volc];
+  const rows = groups.reduce((a,g)=>a+g.points.length,0);
+  const W=980,rowH=34,H=rows*rowH+70,padL=250,padR=90;
+  const maxV=Math.max(...groups.flatMap(g=>g.points.map(p=>p.v)));
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  let i=0;
+  groups.forEach(g=>{
+    s+=`<text x="8" y="${28+i*rowH}" font-size="11.5" fill="#111827" font-weight="600">${esc(g.name)}</text>`;
+    i++;
+    g.points.forEach(p=>{
+      const y=16+i*rowH, w=(p.v/maxV)*(W-padL-padR);
+      s+=`<text x="${padL-8}" y="${y+12}" font-size="11" fill="#374151" text-anchor="end">${esc(p.x)}</text>
+          <rect x="${padL}" y="${y+2}" width="${w.toFixed(1)}" height="14" rx="3" fill="${g.color}" opacity=".85"><title>${esc(p.x)}：${p.v} 元/千次（≈${fmtUSD(p.v/RATE)}/1k）</title></rect>
+          <text x="${padL+w+6}" y="${y+13}" font-size="10.5" fill="#374151">¥${p.v} <tspan fill="#9ca3af">≈${fmtUSD(p.v/RATE)}</tspan></text>`;
+      i++;
+    });
+  });
+  s+=`<text x="8" y="${H-8}" font-size="10" fill="#9ca3af">单位：人民币元 / 千次调用（官网文档原文）· 抓取 2026-09-17</text></svg>`;
+  $('#chartCN').innerHTML=s;
+
+  const tbl = [
+    ['阿里云','联网搜索 标准版','阶梯 42 / 38 / 34 / 30 元/千次（30 QPS 四档）','默认 30 QPS；升档需提前一周申请；连续 5 天不达标降档；按日结'],
+    ['阿里云','联网搜索 极速版','12 元/千次','LiteAdvanced，平均 500ms，默认 10 QPS'],
+    ['阿里云','联网搜索 深度版','50 元/千次','Deep，平均 6s，默认 5 QPS'],
+    ['阿里云','多模态搜索 / 增值包','25 元/千次 / 2.8 元/千次','增强摘要（前 10 条 URL）；按增值包消耗计'],
+    ['腾讯云','按量后付费','轻量 18 · 标准 46 · 尊享 60 · 旗舰 80 元/千次','日结、次日出账单；服务调用失败不计费；尊享/旗舰限企业'],
+    ['腾讯云','资源包（1 年）','5 万次 ¥1,998；100 万次 ¥42,000；5000 万次 ¥1.8M','约 40 → 34 元/千次，量大单价降'],
+    ['火山引擎','豆包搜索 Custom 版 web','0.020 元/次（20 元/千次）','按加和量日结；另有轻量/探索包月套餐与按 token 计费模式；欠费 24h 停服'],
+    ['百度智能云','千帆 联网搜索 / 智能搜索生成','官网价格页未公开单价','每日 100 次免费（与百度搜索共享额度）；单账号日上限 10 万次；按量后付费'],
+    ['博查 Bocha','Web Search API','官网无公开价目页（/pricing 404）','二手信息约 0.02 元/次，未核实'],
+  ];
+  $('#cnTable').innerHTML = `<table><thead><tr><th>厂商</th><th>服务</th><th>官方价</th><th>工程约束 / 备注</th></tr></thead><tbody>`+
+    tbl.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="small">${r[3]}</td></tr>`).join('')+`</tbody></table>`;
+})();
+
+/* =========================================================================
+   图 4：免费额度
+   ========================================================================= */
+(function(){
+  const items=[...FREE_TIER].sort((a,b)=>b.v-a.v);
+  const W=980,rowH=26,H=items.length*rowH+56,padL=210,padR=110;
+  const maxV=Math.max(...items.map(i=>i.v));
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  items.forEach((it,i)=>{
+    const y=32+i*rowH, w=Math.max(2,(it.v/maxV)*(W-padL-padR));
+    const col = it.once? '#f59e0b' : '#2563eb';
+    s+=`<text x="${padL-8}" y="${y+13}" font-size="11.5" fill="#111827" text-anchor="end">${esc(it.name)}</text>
+        <rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="15" rx="3" fill="${col}" opacity=".85"><title>${esc(it.name)}：每月等效 ${it.v.toLocaleString()} 次${it.once?'（一次性）':''}${it.est?'（估算）':''}</title></rect>
+        <text x="${padL+w+6}" y="${y+14}" font-size="11" fill="#374151">${it.v.toLocaleString()} 次/月${it.once?' <tspan fill="#b45309">一次性</tspan>':''}${it.est?' <tspan fill="#9ca3af">估算</tspan>':''}</text>`;
+  });
+  s+=`<text x="8" y="${H-8}" font-size="10" fill="#9ca3af">蓝色 = 每月刷新额度；橙色 = 一次性额度</text></svg>`;
+  $('#chartFree').innerHTML=s;
+})();
+
+/* =========================================================================
+   覆盖率区块：索引规模 / 来源 / 重叠度 / AI 引用 / AA 基准 / 自测方法
+   ========================================================================= */
+(function(){
+  // 索引规模
+  const items=[...INDEX_SIZE].sort((a,b)=>b.v-a.v);
+  const W=980,rowH=30,H=items.length*rowH+70,padL=350,padR=170;
+  const maxV=Math.max(...items.map(i=>i.v));
+  const sx=v=>Math.log10(Math.max(v,1))/Math.log10(maxV);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  items.forEach((it,i)=>{
+    const y=36+i*rowH, w=Math.max(3,sx(it.v)*(W-padL-padR));
+    const col= it.kind==='official'?'#2563eb':(it.kind==='estimate'?'#dc2626':'#94a3b8');
+    s+=`<text x="${padL-8}" y="${y+15}" font-size="11.5" fill="#111827" text-anchor="end">${esc(it.name)}</text>
+        <rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="16" rx="3" fill="${col}" opacity="${it.kind==='official'?0.88:0.5}"><title>${esc(it.name)}\n${esc(it.note)}</title></rect>
+        <text x="${(padL+w+6).toFixed(1)}" y="${y+16}" font-size="11" fill="#374151">${it.kind==='range'?'~':''}${it.v}B 页</text>`;
+  });
+  s+=`<text x="8" y="${H-10}" font-size="10" fill="#9ca3af">对数刻度 · B = 十亿页 · 蓝色 = 厂商官方口径，灰蓝 = 区间示意/精确值不可得，红色 = 第三方估算</text></svg>`;
+  $('#chartIndexSize').innerHTML=s;
+
+  $('#tblIndexSize').innerHTML=`<table><thead><tr><th>对象</th><th>规模（自报口径）</th><th>性质</th><th>说明</th></tr></thead><tbody>`+
+    items.map(it=>`<tr><td><b>${esc(it.name.split('（')[0])}</b></td><td class="num">${it.kind==='range'?'~':''}${it.v}B 页</td>
+      <td class="small ${it.kind==='estimate'?'v-secondary':(it.kind==='official'?'v-official':'v-announce')}">${it.kind==='estimate'?'第三方估算':(it.kind==='official'?'厂商官方口径':'区间/示意')}</td>
+      <td class="small" style="color:#4b5563">${esc(it.note)}</td></tr>`).join('')+`</tbody></table>`;
+
+  // 索引来源
+  const rows=Object.entries(COVER).sort((a,b)=>{
+    const o={低:0,中:1,高:2}; return (o[a[1].risk]-o[b[1].risk]) || a[0].localeCompare(b[0]);
+  });
+  $('#tblCover').innerHTML=`<table><thead><tr><th>厂商 / 产品方</th><th>索引来源</th><th>供给风险</th><th>说明</th></tr></thead><tbody>`+
+    rows.map(([k,v])=>`<tr><td><b>${esc(k)}</b></td><td class="small">${esc(v.src)}</td>
+      <td class="small ${riskClass(v.risk)}">${v.risk}</td><td class="small" style="color:#4b5563">${esc(v.note)}</td></tr>`).join('')+`</tbody></table>`;
+
+  // 重叠度研究
+  $('#tblOverlap').innerHTML=`<table><thead><tr><th>研究 / 来源</th><th>方法</th><th>关键数字</th></tr></thead><tbody>`+
+    OVERLAP.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="small" style="color:#4b5563">${esc(r[1])}</td><td class="small">${esc(r[2])}</td></tr>`).join('')+`</tbody></table>`;
+
+  // AI 引用 vs Google Top10
+  (function(){
+    const items2=[...AICITE].sort((a,b)=>b.v-a.v);
+    const W=460,H=items2.length*32+62,padL=140,padR=70;
+    const maxV=Math.max(...items2.map(i=>i.v));
+    let s2=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      <text x="10" y="18" font-size="12" font-weight="600" fill="#111827">AI 引用落入 Google Top 10 的比例 (%)</text>`;
+    items2.forEach((it,i)=>{
+      const y=34+i*32, w=(it.v/maxV)*(W-padL-padR);
+      s2+=`<text x="${padL-8}" y="${y+14}" font-size="11" fill="#111827" text-anchor="end">${esc(it.name)}</text>
+        <rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="15" rx="3" fill="${it.color}" opacity=".88"><title>${esc(it.name)}：${it.v}%</title></rect>
+        <text x="${(padL+w+6).toFixed(1)}" y="${y+15}" font-size="11" fill="#374151">${it.v}%</text>`;
+    });
+    s2+=`<text x="10" y="${H-10}" font-size="10" fill="#9ca3af">Ahrefs，15,000 prompts，2025-08</text></svg>`;
+    $('#chartAICite').innerHTML=s2;
+  })();
+
+  // Artificial Analysis Search Index
+  (function(){
+    const W=460,H=AA_BENCH.length*36+66,padL=180,padR=60;
+    const maxV=80;
+    let s2=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+      <text x="10" y="18" font-size="12" font-weight="600" fill="#111827">Artificial Analysis Search Index（越高越好）</text>`;
+    AA_BENCH.forEach((b,i)=>{
+      const y=36+i*36, w=(b.v/maxV)*(W-padL-padR);
+      s2+=`<text x="${padL-8}" y="${y+15}" font-size="11" fill="#111827" text-anchor="end">${esc(b.name)}</text>
+        <rect x="${padL}" y="${y+3}" width="${w.toFixed(1)}" height="16" rx="3" fill="${b.color}" opacity="${b.range?0.45:0.88}"><title>${esc(b.name)}：${b.range?('区间 '+b.range[0]+'–'+b.range[1]):b.v}</title></rect>
+        <text x="${(padL+w+6).toFixed(1)}" y="${y+16}" font-size="11" fill="#374151">${b.range?('~'+b.range[0]+'–'+b.range[1]):b.v}</text>`;
+    });
+    s2+=`<text x="10" y="${H-10}" font-size="10" fill="#9ca3af">同一模型 + 同一 agent 框架，仅替换搜索供应商 · 中性灰色为区间/基线</text></svg>`;
+    $('#chartAA').innerHTML=s2;
+  })();
+
+  // 自测方法
+  $('#tblSelfTest').innerHTML=`<table><thead><tr><th>维度</th><th>怎么测</th><th>看什么指标</th></tr></thead><tbody>`+
+    SELFTEST.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="small" style="color:#4b5563">${esc(r[1])}</td><td class="small">${esc(r[2])}</td></tr>`).join('')+`</tbody></table>`;
+})();
+
+/* =========================================================================
+   附录 A：法律风险渲染（判例矩阵 / 风险阶梯 / 法规 / 合规闸门）
+   ========================================================================= */
+(function(){
+  const LC = {good:'#059669', mixed:'#d97706', bad:'#dc2626'};
+  const LT = {good:'有利/安全', mixed:'双刃/未决', bad:'不利/风险'};
+
+  // A.1 判例矩阵（按风险等级排序：不利→未决→有利）
+  const order={bad:0, mixed:1, good:2};
+  const rows=[...CASES].sort((a,b)=>order[a.level]-order[b.level]);
+  $('#tblCases').innerHTML = `<table><thead><tr><th>案件</th><th>法院 / 时间</th><th>认定</th><th>对你的含义</th></tr></thead><tbody>`+
+    rows.map(c=>`<tr>
+      <td><b>${esc(c.name)}</b></td>
+      <td class="small">${esc(c.court)}<br><span style="color:#9ca3af">${esc(c.date)}</span></td>
+      <td class="small" style="color:#4b5563">${esc(c.hold)}</td>
+      <td class="small"><span style="color:${LC[c.level]};font-weight:600">${esc(c.effect)}</span></td></tr>`).join('')+`</tbody></table>`;
+
+  // A.2 风险阶梯图
+  (function(){
+    const W=980, rowH=58, H=RISK_LEVELS.length*rowH+72, padL=210, padR=60;
+    let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+    RISK_LEVELS.forEach((r,i)=>{
+      const y=34+i*rowH, wMax=W-padL-padR;
+      const w=(i+1)/RISK_LEVELS.length*wMax;
+      s+=`<text x="${padL-10}" y="${y+22}" font-size="12" font-weight="700" fill="${r.color}" text-anchor="end">${esc(r.lv)}</text>
+          <rect x="${padL}" y="${y}" width="${w.toFixed(0)}" height="34" rx="4" fill="${r.color}" opacity="0.14"/>
+          <rect x="${padL}" y="${y}" width="5" height="34" rx="2" fill="${r.color}"/>
+          <text x="${padL+14}" y="${y+15}" font-size="11.5" fill="#111827" font-weight="600">${esc(r.title)}</text>
+          <text x="${padL+14}" y="${y+29}" font-size="10.5" fill="#6b7280">依据：${esc(r.basis)}</text>`;
+    });
+    // 本项目位置标记
+    const y0=34+0*rowH;
+    s+=`<g><rect x="${padL-6}" y="${y0-8}" width="258" height="50" rx="6" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="${padL+252}" y="${y0+52}" font-size="11" font-weight="700" fill="#059669" text-anchor="end">◀ 本项目当前位置（不登录 / 不破解验证码 / 单出口 / 自用）</text></g>`;
+    s+=`<text x="8" y="${H-8}" font-size="10" fill="#9ca3af">越往下风险越高；唯一能把「抓公开数据」变成 CFAA 违反的开关是 L3（被撤销授权后继续）</text></svg>`;
+    $('#chartRisk').innerHTML=s;
+  })();
+
+  // A.2 风险阶梯表
+  $('#tblRisk').innerHTML = `<table><thead><tr><th>档位</th><th>触发行为</th><th>法律依据</th><th>典型后果</th></tr></thead><tbody>`+
+    RISK_LEVELS.map(r=>`<tr><td><b style="color:${r.color}">${esc(r.lv)}</b></td>
+      <td class="small"><b>${esc(r.title)}</b><br><span style="color:#6b7280">${esc(r.detail)}</span></td>
+      <td class="small" style="color:#4b5563">${esc(r.basis)}</td>
+      <td class="small">${['基本无民事风险（仍可能收 C&D）','禁令 + 损害赔（hiQ $500,000）','CFAA 责任 + 禁令','多重诉因叠加，赔偿量级上升'][RISK_LEVELS.indexOf(r)]}</td></tr>`).join('')+`</tbody></table>`;
+
+  // A.3 法规
+  $('#tblStatutes').innerHTML = `<table><thead><tr><th>法规</th><th>适用范围</th><th>触发条件</th><th>罚则 / 执法</th><th>是否覆盖搜索抓取</th></tr></thead><tbody>`+
+    STATUTES.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="small" style="color:#4b5563">${esc(r[1])}</td>
+      <td class="small">${esc(r[2])}</td><td class="small">${esc(r[3])}</td>
+      <td class="small" style="color:#059669;font-weight:600">${esc(r[4])}</td></tr>`).join('')+`</tbody></table>`;
+
+  // A.5 合规闸门
+  $('#tblGates').innerHTML = `<table><thead><tr><th>闸门</th><th>现状（代码核对）</th><th>建议动作</th><th>依据</th></tr></thead><tbody>`+
+    GATES.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="small" style="color:#4b5563">${esc(r[1])}</td>
+      <td class="small" style="color:#b45309">${esc(r[2])}</td><td class="small" style="color:#6b7280">${esc(r[3])}</td></tr>`).join('')+`</tbody></table>`;
+})();
+
+/* =========================================================================
+   图 5：计费机制构成 + 说明 + 明细表
+   ========================================================================= */
+(function(){
+  const counts={};
+  DATA.forEach(d=>{counts[d.billing]=(counts[d.billing]||0)+1;});
+  const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((a,e)=>a+e[1],0);
+  const colors=['#2563eb','#7c3aed','#dc2626','#ea580c','#059669','#0891b2','#b45309','#64748b','#db2777','#0d9488'];
+  const W=460,H=300,R=110,cx=150,cy=140;
+  let acc=0, s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  entries.forEach(([k,v],i)=>{
+    const a0=acc/total*Math.PI*2-Math.PI/2, a1=(acc+v)/total*Math.PI*2-Math.PI/2; acc+=v;
+    const x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
+    const large=(a1-a0)>Math.PI?1:0;
+    s+=`<path d="M ${cx} ${cy} L ${x0.toFixed(1)} ${y0.toFixed(1)} A ${R} ${R} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z"
+        fill="${colors[i%colors.length]}" opacity=".88"><title>${esc(k)}：${v} 个产品（${(v/total*100).toFixed(0)}%）</title></path>`;
+  });
+  s+=`<circle cx="${cx}" cy="${cy}" r="58" fill="#fff"/>
+      <text x="${cx}" y="${cy-4}" font-size="20" font-weight="700" text-anchor="middle">${total}</text>
+      <text x="${cx}" y="${cy+15}" font-size="10.5" fill="#6b7280" text-anchor="middle">产品条目</text>`;
+  entries.forEach(([k,v],i)=>{
+    const y=26+i*24;
+    s+=`<rect x="310" y="${y-9}" width="11" height="11" rx="3" fill="${colors[i%colors.length]}"/>
+        <text x="328" y="${y}" font-size="11.5" fill="#111827">${esc(k)}</text>
+        <text x="432" y="${y}" font-size="11" fill="#6b7280" text-anchor="end">${v}</text>`;
+  });
+  s+='</svg>';
+  $('#chartBilling').innerHTML=s;
+
+  $('#billingExplain').innerHTML = '<h3 style="margin-top:0">五种机制怎么读</h3>' +
+    Object.entries(BILLING_EXPLAIN).map(([k,v])=>`<div style="margin:10px 0"><b>${k}</b><div class="small" style="color:#4b5563">${v[0]}</div><div class="small" style="color:#6b7280;margin-top:2px">${v[1]}</div></div>`).join('');
+
+  let h=`<table><thead><tr><th>厂商 / 产品</th><th>计费机制</th><th>计费单位</th><th>价格（官网原文口径）</th><th>折算</th></tr></thead><tbody>`;
+  DATA.slice().sort((a,b)=>(a.billing||'').localeCompare(b.billing||'')).forEach(d=>{
+    const p = d.cny!=null ? `¥${d.cny} / ${d.unit}` : (d.usd!=null? `${fmtUSD(d.usd)} / ${d.unit}` : '官网未公开');
+    const conv = per1kUSD(d)!=null ? `${fmtUSD(per1kUSD(d))} · ${fmtCNY(per1kUSD(d)*RATE)} / 1k 次` : '—';
+    h+=`<tr><td>${esc(d.vendor+' · '+d.name)}</td><td>${esc(d.billing)}</td><td class="small">${esc(d.unit)}</td><td class="small">${esc(p)}</td><td class="num small">${conv}</td></tr>`;
+  });
+  h+='</tbody></table>';
+  $('#billingTable').innerHTML=h;
+})();
+
+/* =========================================================================
+   图 6：象限图
+   ========================================================================= */
+(function(){
+  const W=980,H=440,padL=90,padR=40,padT=40,padB=60;
+  const xs=QUAD.map(q=>q.x);
+  const lo=Math.log10(0.4), hi=Math.log10(30);
+  const sx = v => padL + (Math.log10(v)-lo)/(hi-lo)*(W-padL-padR);
+  const lanes={3.5:'自建 / 免费',3:'自有索引 / 第一方抓取',2.5:'云厂商第一方',2:'模型厂商加工结果',1:'代抓 Google SERP'};
+  const sy = y => H-padB - (y-0.6)/(3.9-0.6)*(H-padT-padB);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  Object.entries(lanes).forEach(([y,l])=>{
+    s+=`<line x1="${padL}" y1="${sy(+y)}" x2="${W-padR}" y2="${sy(+y)}" stroke="#e5e7eb"/>
+        <text x="${padL-10}" y="${sy(+y)+4}" font-size="11" fill="#4b5563" text-anchor="end">${l}</text>`;
+  });
+  [0.5,1,2,5,10,20,30].forEach(v=>{
+    s+=`<line x1="${sx(v)}" y1="${padT-12}" x2="${sx(v)}" y2="${H-padB}" stroke="#f1f3f5"/>
+        <text x="${sx(v)}" y="${H-padB+18}" font-size="10.5" fill="#6b7280" text-anchor="middle">${fmtUSD(v)}</text>`;});
+  s+=`<text x="${W-padR}" y="${H-padB+38}" font-size="11" fill="#374151" text-anchor="end">每千次查询价格（对数，USD）→ 越左越便宜</text>`;
+  // quadrant hint
+  s+=`<rect x="${padL+2}" y="${sy(3.9)}" width="${sx(2)-padL-2}" height="${sy(2.6)-sy(3.9)}" fill="#059669" opacity="0.05"/>
+      <text x="${padL+14}" y="${sy(3.75)+16}" font-size="11" fill="#059669">便宜 + 来源独立（首选）</text>
+      <rect x="${sx(9)}" y="${sy(2.2)}" width="${W-padR-sx(9)}" height="${sy(0.6)-sy(2.2)}" fill="#dc2626" opacity="0.05"/>
+      <text x="${W-padR-14}" y="${sy(0.85)+14}" font-size="11" fill="#dc2626" text-anchor="end">贵 + 依赖第三方 / 模型加工</text>`;
+  QUAD.forEach(q=>{
+    const c=CATS[q.cat].color;
+    s+=`<circle cx="${sx(q.x).toFixed(1)}" cy="${sy(q.y).toFixed(1)}" r="6" fill="${c}" opacity=".9" stroke="#fff" stroke-width="1.5">
+        <title>${esc(q.name)}：${fmtUSD(q.x)}/1k（≈${fmtCNY(q.x*RATE)}）· ${esc(q.cat)}</title></circle>
+        <text x="${(sx(q.x)+9).toFixed(1)}" y="${(sy(q.y)+3.5).toFixed(1)}" font-size="10.5" fill="#374151">${esc(q.name)}</text>`;
+  });
+  s+=`<text x="8" y="${H-6}" font-size="10" fill="#9ca3af">来源分类按厂商公开说明，未经第三方审计；价格为官网原文价（不含 token 费）</text></svg>`;
+  $('#chartQuad').innerHTML=s;
+})();
+
+/* =========================================================================
+   完整数据表（排序 / 筛选 / 货币切换）
+   ========================================================================= */
+let tCur='usd', tSort={k:'price', dir:1}, tCats=new Set(Object.keys(CATS)), tQ='';
+const COLS=[
+  {k:'vendor',   t:'厂商'},
+  {k:'name',     t:'产品'},
+  {k:'cat',      t:'类别'},
+  {k:'cover',    t:'索引来源（覆盖）'},
+  {k:'billing',  t:'计费机制'},
+  {k:'price',    t:'价格（官网口径）', num:true},
+  {k:'per1k',    t:'折算 / 1k 次', num:true},
+  {k:'free',     t:'免费额度'},
+  {k:'qps',      t:'吞吐 / QPS'},
+  {k:'note',     t:'备注'},
+  {k:'src',      t:'来源 / 核实'},
+];
+function filtered(){
+  let rows=DATA.filter(d=>tCats.has(d.cat));
+  if(tQ){const q=tQ.toLowerCase();rows=rows.filter(d=>(d.vendor+d.name+d.note+d.src).toLowerCase().includes(q));}
+  const val=k=>{
+    switch(k){
+      case 'vendor': return d=>d.vendor;
+      case 'name':   return d=>d.name;
+      case 'cat':    return d=>d.cat;
+      case 'cover':  return d=> (COVER[d.vendor]?COVER[d.vendor].src:'');
+      case 'billing':return d=>d.billing;
+      case 'price':  return d=> d.cny!=null ? d.cny : (d.usd==null? 1e12 : d.usd*RATE); // 统一按 CNY 排序
+      case 'per1k':  return d=> {const p=per1kUSD(d); return p==null?1e12:p;};
+      case 'free':   return d=>d.free||'';
+      case 'qps':    return d=>d.qps||'';
+      case 'note':   return d=>d.note||'';
+      case 'src':    return d=>d.src||'';
+    }
+  };
+  const f=val(tSort.k);
+  rows.sort((a,b)=>{
+    const x=f(a),y=f(b);
+    const r = (typeof x==='number'&&typeof y==='number') ? x-y : String(x).localeCompare(String(y));
+    return r*tSort.dir;
+  });
+  return rows;
+}
+function renderTable(){
+  $('#catChips').innerHTML = Object.keys(CATS).map(c=>
+    `<button class="chip ${tCats.has(c)?'on':''}" data-cat="${c}" style="margin-left:6px">${c}</button>`).join('');
+  $$('#catChips .chip').forEach(b=>b.onclick=()=>{
+    const c=b.dataset.cat; tCats.has(c)?tCats.delete(c):tCats.add(c); renderTable();
+  });
+  $('#thead').innerHTML = COLS.map(c=>
+    `<th class="sortable" data-k="${c.k}" ${c.num?'style="text-align:right"':''}>${c.t}${tSort.k===c.k?(tSort.dir>0?' ▲':' ▼'):''}</th>`).join('');
+  $$('#thead th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(tSort.k===k) tSort.dir*=-1; else tSort={k,dir:1};
+    renderTable();
+  });
+  const rows=filtered();
+  $('#count').textContent = `显示 ${rows.length} / ${DATA.length} 条`;
+  $('#tbody').innerHTML = rows.map(d=>{
+    const priceRaw = d.cny!=null ? `¥${d.cny} / ${esc(d.unit)}`
+      : (d.usd!=null ? `${tCur==='usd'?fmtUSD(d.usd):fmtCNY(d.usd*RATE)} / ${esc(d.unit)}` : '官网未公开');
+    const p=per1kUSD(d);
+    const per = p==null ? '—' : (tCur==='usd'?fmtUSD(p):fmtCNY(p*RATE));
+    const vs = d.ver==='official'?'v-official':(d.ver==='announce'?'v-announce':'v-secondary');
+    return `<tr>
+      <td><b>${esc(d.vendor)}</b></td>
+      <td>${esc(d.name)}</td>
+      <td>${tag(d.cat)}</td>
+      <td class="small">${(()=>{const c=COVER[d.vendor];return c?`<span class="${riskClass(c.risk)}">${esc(c.src)}</span> <span class="small" style="color:#9ca3af">（风险${c.risk}）</span>`:'—';})()}</td>
+      <td class="small">${esc(d.billing)}</td>
+      <td class="num small">${priceRaw}</td>
+      <td class="num"><b>${per}</b></td>
+      <td class="small">${esc(d.free||'—')}</td>
+      <td class="small">${esc(d.qps||'—')}</td>
+      <td class="small" style="max-width:330px">${esc(d.note||'')}</td>
+      <td class="small"><a href="https://${esc(d.src.split('（')[0].split(' ')[0])}" target="_blank" rel="noopener">${esc(d.src)}</a><br><span class="${vs}">${verLabel(d.ver)}</span></td>
+    </tr>`;
+  }).join('');
+}
+$('#q').oninput = e => { tQ=e.target.value; renderTable(); };
+$('#tUSD').onclick = () => { tCur='usd'; $('#tUSD').classList.add('on'); $('#tCNY').classList.remove('on'); renderTable(); };
+$('#tCNY').onclick = () => { tCur='cny'; $('#tCNY').classList.add('on'); $('#tUSD').classList.remove('on'); renderTable(); };
+renderTable();
+
+/* =========================================================================
+   统计：价格带 / 单位换算
+   ========================================================================= */
+(function(){
+  const vals = DATA.filter(d=>d.chart && per1kUSD(d)!=null).map(per1kUSD).sort((a,b)=>a-b);
+  const q = p => vals[Math.min(vals.length-1, Math.floor(vals.length*p))];
+  const band = [
+    ['最低', fmtUSD(vals[0]), 'Parallel Turbo / Serper 批量档'],
+    ['25 分位', fmtUSD(q(0.25)), '国产云厂商极速档附近'],
+    ['中位数', fmtUSD(q(0.5)), 'Brave / Perplexity / You.com / Tavily 订阅档'],
+    ['75 分位', fmtUSD(q(0.75)), 'Exa Search / AWS'],
+    ['最高', fmtUSD(vals[vals.length-1]), 'SerpApi 入门档 / Tavily advanced'],
+  ];
+  $('#statBand').innerHTML = `<table><tbody>${band.map(b=>
+    `<tr><td>${b[0]}</td><td class="num"><b>${b[1]}</b></td><td class="num">${fmtCNY(parseFloat(b[1].replace(/[$,]/g,''))*RATE)}</td><td class="small" style="color:#6b7280">${b[2]}</td></tr>`).join('')}</tbody></table>
+    <p class="note">样本：${vals.length} 个可归一的每千次查询价。中位数比均价更能代表行业锚点。</p>`;
+
+  const unit = [
+    ['$1 / 1k 次', '¥0.0072 / 次', 'Parallel Turbo / Fast'],
+    ['$5 / 1k 次', '¥0.036 / 次', '行业锚点：Brave、You.com、Perplexity Search'],
+    ['$10 / 1k 次', '¥0.072 / 次', 'OpenAI / Anthropic 调用费（另计 token）'],
+    ['$14 / 1k 次', '¥0.10 / 次', 'Azure Grounding / Gemini Grounding'],
+    ['¥20 / 千次', '$0.00278 / 次', '火山引擎豆包搜索'],
+    ['¥42 / 千次', '$0.00583 / 次', '阿里云标准版首档'],
+    ['$1 / 1k 页', '¥0.0072 / 页', 'Exa / You.com Contents（读正文）'],
+  ];
+  $('#statUnit').innerHTML = `<table><thead><tr><th>官网价</th><th>每次</th><th>说明</th></tr></thead><tbody>${unit.map(u=>
+    `<tr><td class="mono">${u[0]}</td><td class="mono">${u[1]}</td><td class="small" style="color:#6b7280">${u[2]}</td></tr>`).join('')}</tbody></table>
+    <p class="note">换算按 1 USD = 7.2 CNY。注意"搜索贵、读取便宜"：查询约 $1–15/1k，而正文提取普遍 $1–4/1k 页。</p>`;
+})();
+
+/* =========================================================================
+   TCO 表 / 陷阱 / 决策矩阵 / 来源
+   ========================================================================= */
+(function(){
+  let h='<table><thead><tr>'+TCO_ROWS[0].map((c,i)=>`<th${i?' style="text-align:right"':''}>${c}</th>`).join('')+'</tr></thead><tbody>';
+  TCO_ROWS.slice(1).forEach(r=>{
+    const last = r[0]==='结论';
+    h+='<tr'+(last?' style="background:#ecfdf5;font-weight:600"':'')+'>'+r.map((c,i)=>{
+      if(i===0) return `<td>${c}</td>`;
+      const n=parseFloat(String(c).replace(/[^\d.]/g,''));
+      return `<td style="text-align:right">${c}</td>`;
+    }).join('')+'</tr>';
+  });
+  h+='</tbody></table>';
+  $('#tcoTable').innerHTML=h;
+})();
+
+(function(){
+  $('#trapList').innerHTML = TRAPS.map((t,i)=>
+    `<div style="padding:11px 0;border-bottom:1px solid #f1f3f5">
+      <b>${i+1}. ${t[0]}</b>
+      <div class="small" style="color:#4b5563;margin-top:3px">${t[1]}</div></div>`).join('');
+})();
+
+(function(){
+  const rows=[
+    ['Agent 日常联网搜索（延迟敏感、量大）','Brave 或 Parallel Turbo','$1–5/1k，50–600 QPS，独立索引，有 SLA/ZDR'],
+    ['需要正文 Markdown、不想自建抓取','Exa Contents / You.com Contents / Firecrawl','$1/1k 页（Exa、You.com）；见"markdown tax"噪音'],
+    ['要求"和 Google 结果一致"','Serper（成本最低）或 SerpApi（有 Legal Shield）','$0.3–1/1k vs $9–25/1k；法律灰色、有断供风险'],
+    ['中国网络 / 中文内容 / 合规','火山豆包搜索（¥20/千次）或腾讯轻量版（¥18/千次）','官方文档透明、日结；注意 QPS 与欠费策略'],
+    ['需要零数据保留 / 强合规','Brave（ZDR + SOC2）或 Kagi','ZDR 需要厂商自己不做二次转售'],
+    ['指纹研究 / 登录态 / 真浏览器行为','保留本项目 google-cdp','零现金成本；不适用 SLA 场景'],
+    ['零预算兜底','SearXNG 自托管','$6/月 VPS，零边际成本；上游限流需自扛'],
+    ['模型内置（省集成）','Gemini Grounding（$14/1k，5k 次/月免费）','注意一次提问可能触发多次搜索计费'],
+  ];
+  $('#matrixTable').innerHTML = `<table><thead><tr><th>场景</th><th>推荐</th><th>理由 / 价格</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="small" style="color:#4b5563">${r[2]}</td></tr>`).join('')+`</tbody></table>`;
+})();
+
+(function(){
+  const seen=new Map();
+  DATA.forEach(d=>{ if(!seen.has(d.src)) seen.set(d.src,{ver:d.ver,by:[],cat:d.cat}); seen.get(d.src).by.push(d.vendor+' '+d.name); });
+  $('#srcList').innerHTML = `<table><thead><tr><th>官网来源</th><th>覆盖产品</th><th>核实状态</th></tr></thead><tbody>`+
+    [...seen.entries()].map(([src,v])=>{
+      const url = src.split('（')[0].split(' · ')[0].trim();
+      const vs = v.ver==='official'?'v-official':(v.ver==='announce'?'v-announce':'v-secondary');
+      return `<tr><td class="small"><a href="https://${esc(url)}" target="_blank" rel="noopener">${esc(src)}</a></td>
+        <td class="small">${v.by.map(esc).join('、')}</td><td class="${vs} small">${verLabel(v.ver)}</td></tr>`;
+    }).join('')+`</tbody></table>`;
+})();
+</script>
+</body>
+</html>
